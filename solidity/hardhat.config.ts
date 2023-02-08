@@ -10,7 +10,7 @@ const config: HardhatUserConfig = {
   defaultNetwork: 'mumbai',
   networks: {
     "mumbai": {
-      url: "https://rpc-mumbai.maticvigil.com",
+      url: "https://polygon-testnet-rpc.allthatnode.com:8545",
       chainId: 80001,
       accounts: [process.env.PRIVATE_KEY ?? ""]
     }

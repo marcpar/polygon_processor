@@ -8,9 +8,12 @@ import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 contract NFT is Initializable, ContextUpgradeable, ERC1155Upgradeable {
 
     mapping(address => bool) _allowedMinters;
+
+    string message;
     
     function initialize(string memory uri) public initializer {
         __ERC1155_init(uri);
+        message = "hello";
     }
 
     modifier onlyAllowedMinters() {
@@ -23,5 +26,13 @@ contract NFT is Initializable, ContextUpgradeable, ERC1155Upgradeable {
 
     function externalMint() external onlyAllowedMinters {
         
+    }
+
+    function externalHello() view external returns (string memory) {
+        return string.concat("msg: ", message);
+    }
+
+    function externalSetHello(string calldata newMessage) external {
+        message = newMessage;
     }
 }
