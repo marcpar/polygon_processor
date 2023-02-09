@@ -1,8 +1,8 @@
 import { ethers, upgrades} from "hardhat";
 
 async function main() {
-  let nft = await ethers.getContractFactory("NFT");
-  let deployResponse = await upgrades.deployProxy(nft, ["ar://"], {
+  let nft = await ethers.getContractFactory("Token");
+  let deployResponse = await upgrades.deployProxy(nft, [process.env.ALLOWED_ADDRESS ?? ""], {
     initializer: 'initialize'
   });
   await deployResponse.deployed();

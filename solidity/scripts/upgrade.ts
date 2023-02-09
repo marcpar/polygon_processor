@@ -1,9 +1,7 @@
 import { ethers, upgrades } from "hardhat";
-import * as dotenv from "dotenv";
-dotenv.config();
 
 async function main() {
-  let nft = await ethers.getContractFactory("NFT");
+  let nft = await ethers.getContractFactory("Token");
   const PROXY_ADDRESS = process.env.PROXY_ADDRESS ?? "";
   console.log(PROXY_ADDRESS);
 
