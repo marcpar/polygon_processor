@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  polygon_minter:
+    build:
+      context: jobs/polygon_minter
+      dockerfile: local.dockerfile
+    entrypoint: yarn
+    command: dev:watch
+    working_dir: /home/app
+    volumes:
+      - ./jobs/polygon_minter:/home/app
+
+  polygon_callback:
+    build:
+      context: jobs/polygon_minter
+      dockerfile: local.dockerfile
+    entrypoint: yarn
+    command: callback-server
+    working_dir: /home/app
+    volumes:
+      - ./jobs/polygon_minter:/home/app

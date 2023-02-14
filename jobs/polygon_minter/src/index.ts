@@ -1,2 +1,10 @@
+import { LoadConfig, GetConfig } from './config';
+import { InitLogger, Logger } from './lib/logger';
 
-console.log('hello world');
+(async () => {
+    InitLogger();
+    LoadConfig();
+
+    let config = GetConfig();
+    console.table(config);
+})();

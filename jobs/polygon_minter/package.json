@@ -9,6 +9,15 @@
     "typescript": "^4.9.4"
   },
   "scripts": {
-    "build": "rm -rf ./dist && tsc"
+    "build": "rm -rf ./dist && tsc",
+    "callback-server": "ts-node ./bin/callback_server.ts",
+    "dev": "ts-node --esm src/index.ts",
+    "dev:watch": "nodemon -w src -e ts,js,json --exec 'yarn run dev'"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "ethers": "^6.0.3",
+    "nodemon": "^2.0.20",
+    "winston": "^3.8.2"
   }
 }
