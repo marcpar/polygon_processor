@@ -16,7 +16,8 @@ import { CreateAzureStorageQueue } from './queue/azure_storage_queue';
         networkID: '80001',
         contractAddress: config.ProxyAddress,
         privateKey: config.PrivateKey,
-        rpcURL: 'https://polygon-testnet-rpc.allthatnode.com:8545'
+        rpcURL: 'https://polygon-testnet-rpc.allthatnode.com:8545',
+        openSeaBaseUrl: 'https://testnets.opensea.io/assets/mumbai'
     });
     SetMaxJobs(config.MaxJobs ?? 5);
 

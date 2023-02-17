@@ -1,6 +1,5 @@
 import { GetConfig, LoadConfig } from "../src/config";
 import {
-    logger,
     QueueServiceClient,
     StorageSharedKeyCredential
 } from "@azure/storage-queue";

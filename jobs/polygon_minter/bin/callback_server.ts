@@ -1,9 +1,8 @@
 import { createServer, } from "http";
-import { Logger } from "../src/lib/logger";
 
 createServer((req, res) => {
     req.on('data', (data) => {
-        Logger().info(data)
+        console.log(Buffer.from(data).toString('utf-8'))
     });
 
     res.write("200")

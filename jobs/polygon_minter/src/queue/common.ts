@@ -13,7 +13,6 @@ type Payload = {
     ArweaveTxnId: string
 }
 
-
 type ParsePayloadResult = {
     Payload: Payload[] | null,
     Error: String | null

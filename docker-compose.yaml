@@ -5,18 +5,18 @@ services:
     build:
       context: jobs/polygon_minter
       dockerfile: local.dockerfile
-    entrypoint: yarn
-    command: dev:watch
-    working_dir: /home/app
+    entrypoint: npm
+    command: [ run, dev:watch ]
+    working_dir: /home/app/jobs/polygon_minter
     volumes:
-      - ./jobs/polygon_minter:/home/app
+      - .:/home/app
 
   polygon_callback:
     build:
       context: jobs/polygon_minter
       dockerfile: local.dockerfile
-    entrypoint: yarn
-    command: callback-server
-    working_dir: /home/app
+    entrypoint: npm
+    command: [ run, callback-server ]
+    working_dir: /home/app/jobs/polygon_minter
     volumes:
-      - ./jobs/polygon_minter:/home/app
+      - .:/home/app

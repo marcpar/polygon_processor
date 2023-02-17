@@ -11,6 +11,8 @@ type Config = {
     MinimumConfirmations: number,
     DefaultCallbackURL: string,
     MaxJobs: number,
+    RpcUrl: string,
+    OpenSeaBaseUrl: string
 }
 
 let config: Config;
@@ -41,6 +43,14 @@ function LoadConfig() {
         Logger().error("PRIVATE_KEY is a required environment variable");
         process.exit(1);
     }
+    if (!process.env.RPC_URL) {
+        Logger().error("RPC_URL is a required environment variable");
+        process.exit(1);
+    }
+    if (!process.env.OPENSEA_BASE_URL) {
+        Logger().error("OPENSEA_BASE_URL is a required environment variable");
+        process.exit(1);
+    }
 
     try {
         config = {
@@ -51,7 +61,9 @@ function LoadConfig() {
             ProxyAddress: process.env.PROXY_ADDRESS,
             MinimumConfirmations: process.env.MIN_CONFIRMATIONS ? parseInt(process.env.MIN_CONFIRMATIONS) : 15,
             DefaultCallbackURL: process.env.DEFAULT_CALLBACK_URL,
-            MaxJobs: process.env.MAX_JOBS ? parseInt(process.env.MAX_JOBS) : 0
+            MaxJobs: process.env.MAX_JOBS ? parseInt(process.env.MAX_JOBS) : 0,
+            RpcUrl: process.env.RPC_URL,
+            OpenSeaBaseUrl: process.env.OPENSEA_BASE_URL
         }
     } catch (e) {
         let err = e as Error;

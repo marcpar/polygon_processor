@@ -80,14 +80,15 @@ async function processJob(job: Job) {
     Emit({
         Event: 'started',
         JobId: job.payload[0].JobId,
-        Message: 'started'
+        Message: `Processing job: ${job.payload[0].JobId}`
     });
     Logger().info(`minting: ${job.payload[0].ArweaveTxnId}`);
-    await Mint(`ar://${job.payload[0].ArweaveTxnId}/opensea.json`);
+    let result = await Mint(`ar://${job.payload[0].ArweaveTxnId}/opensea.json`);
     Emit({
         Event: 'success',
         JobId: job.payload[0].JobId,
-        Message: 'done'
+        Message: `Successfullly processed: ${job.payload[0].JobId}`,
+        Details: result
     });
 }
 
