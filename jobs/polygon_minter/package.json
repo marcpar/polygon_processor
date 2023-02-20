@@ -5,11 +5,12 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^18.11.18",
+    "@vercel/ncc": "^0.36.1",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.4"
   },
   "scripts": {
-    "build": "rm -rf ./dist && tsc",
+    "build": "rm -rf ./dist && ncc build -C src/index.ts",
     "callback-server": "ts-node ./bin/callback_server.ts",
     "dev": "ts-node --esm src/index.ts",
     "dev:watch": "nodemon -w src -e ts,js,json --exec 'npm run dev'"

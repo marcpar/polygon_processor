@@ -13,7 +13,7 @@ const config: HardhatUserConfig = {
     "mumbai": {
       url: "https://polygon-testnet-rpc.allthatnode.com:8545",
       chainId: 80001,
-      accounts: [process.env.PRIVATE_KEY ?? ""]
+      accounts: [process.env.PRIVATE_KEY ?? "0x0000000000000000000000000000000000000000000000000000000000000000"]
     }
   }
 };
