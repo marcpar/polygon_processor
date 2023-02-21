@@ -7,3 +7,4 @@ services:
       dockerfile: jobs/polygon_minter/dockerfile
     env_file:
       - polygon_minter.env
+    restart: unless-stopped
