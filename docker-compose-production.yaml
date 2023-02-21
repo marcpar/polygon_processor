@@ -1,0 +1,9 @@
+version: "3.7"
+
+services:
+  polygon_minter:
+    build:
+      context: .
+      dockerfile: jobs/polygon_minter/dockerfile
+    env_file:
+      - polygon_minter.env
