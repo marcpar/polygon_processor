@@ -16,7 +16,10 @@
     "hardhat": "^2.12.6"
   },
   "dependencies": {
+    "@biconomy/mexa": "^3.0.5",
     "dotenv": "^16.0.3"
   },
-  "bundleDependencies": true
+  "bundleDependencies": [
+    "dotenv"
+  ]
 }

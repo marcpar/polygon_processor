@@ -9,6 +9,11 @@
       "address": "0x1fEb261ddbC6713D5e8b3Bd6D76063c79748F339",
       "txHash": "0xaed7a2cbd6262b038b3ee8e94ce6177b81a017461695553899942136503ba88c",
       "kind": "transparent"
+    },
+    {
+      "address": "0x281eF3837672cF2d0e57a56123416e332A82a168",
+      "txHash": "0x7d5b27d35870556d0bc71265e6731e9eb8948ac59eb05bcf4159dd907ad1a574",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -160,6 +165,78 @@
               }
             ],
             "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "6b601e4bff5aff03d1eb2232b47dafa46e7eef4f4e3d2881b6fe009379d53b4e": {
+      "address": "0x1Ff823bE4c7881e30C678363985a27ED8d6E9DA8",
+      "txHash": "0x62183afcfd35aa88423cd8a9d603a4a88506f066ec2db3a800de0e57274be17d",
+      "layout": {
+        "solcVersion": "0.8.17",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_admin",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "MetaTX",
+            "src": "contracts/MetaTX.sol:8"
+          },
+          {
+            "label": "_trustedForwarder",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_address",
+            "contract": "MetaTX",
+            "src": "contracts/MetaTX.sol:9"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
           },
           "t_uint256": {
             "label": "uint256",
