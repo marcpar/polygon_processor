@@ -7,6 +7,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 contract MetaTX is Initializable, ContextUpgradeable {
     address private _admin;
     address private _trustedForwarder;
+    string private _lastMessage;
 
     event SayHelloForFree(address, string);
 
@@ -59,15 +60,25 @@ contract MetaTX is Initializable, ContextUpgradeable {
         return forwarder == _trustedForwarder;
     }
 
-    function initialize(
-        address admin,
-        address trustedForwarder
-    ) public initializer {
+    function getTrustedForwarder() public view returns (address) {
+        return _trustedForwarder;
+    }
+
+    function trustedForwarder() public view returns (address) {
+        return _trustedForwarder;
+    }
+
+    function initialize(address admin, address forwarder) public initializer {
         _admin = admin;
-        setTrustedForwarder(trustedForwarder);
+        setTrustedForwarder(forwarder);
     }
 
     function sayHello(string calldata message) external {
+        _lastMessage = message;
         emit SayHelloForFree(_msgSender(), message);
+    }
+
+    function getLastMessage() external view returns (string memory) {
+        return _lastMessage;
     }
 }
