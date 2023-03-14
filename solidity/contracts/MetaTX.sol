@@ -3,6 +3,7 @@ pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "./Token.sol";
 
 contract MetaTX is Initializable, ContextUpgradeable {
     address private _admin;
@@ -58,10 +59,6 @@ contract MetaTX is Initializable, ContextUpgradeable {
 
     function isTrustedForwarder(address forwarder) public view returns (bool) {
         return forwarder == _trustedForwarder;
-    }
-
-    function getTrustedForwarder() public view returns (address) {
-        return _trustedForwarder;
     }
 
     function trustedForwarder() public view returns (address) {
