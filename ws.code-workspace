@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "./solidity"
+		},
+		{
+			"path": "./jobs/polygon_claimable_processor"
 		}
 	],
 	"settings": {}

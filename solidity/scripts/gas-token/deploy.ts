@@ -1,12 +1,12 @@
-import { ethers, upgrades } from "hardhat";
+import { ethers, upgrades} from "hardhat";
 
 async function main() {
-  let nft = await ethers.getContractFactory("Token");
-  const PROXY_ADDRESS = process.env.PROXY_ADDRESS ?? "";
-  console.log(PROXY_ADDRESS);
-
-  let deployResponse = await upgrades.upgradeProxy(PROXY_ADDRESS, nft);
+  let gasToken = await ethers.getContractFactory("GasToken");
+  let deployResponse = await upgrades.deployProxy(gasToken, [process.env.ALLOWED_ADDRESS ?? "", "0x69015912AA33720b842dCD6aC059Ed623F28d9f7"], {
+    initializer: 'initialize'
+  });
   await deployResponse.deployed();
+  
   console.log(`Deployed to ${deployResponse.address}`);
 }
 

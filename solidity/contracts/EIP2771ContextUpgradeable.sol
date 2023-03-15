@@ -3,14 +3,27 @@ pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "./Token.sol";
 
-contract MetaTX is Initializable, ContextUpgradeable {
-    address private _admin;
-    address private _trustedForwarder;
-    string private _lastMessage;
+/**
+ * @title EIP2771ContextUpgradeable
+ * @notice inherit for contracts that will receive metatransactions from a trusted forwarder
+ */
+abstract contract EIP2771ContextUpgradeable is
+    Initializable,
+    ContextUpgradeable
+{
+    /**
+     * address of the trusted forwarder
+     */
+    address internal _trustedForwarder;
 
-    event SayHelloForFree(address, string);
+    /**
+     * initialize
+     * @param forwarder initial trusted forwarder
+     */
+    function __EIP2771ContextUpgradeable_init(address forwarder) internal {
+        _trustedForwarder = forwarder;
+    }
 
     function _msgSender()
         internal
@@ -44,38 +57,13 @@ contract MetaTX is Initializable, ContextUpgradeable {
         }
     }
 
-    modifier onlyAdmin() {
-        require(_msgSender() == _admin, "Requires admin account");
-        _;
-    }
-
-    function setAdmin(address admin) public onlyAdmin {
-        _admin = admin;
-    }
-
-    function setTrustedForwarder(address forwarder) public onlyAdmin {
-        _trustedForwarder = forwarder;
-    }
-
     function isTrustedForwarder(address forwarder) public view returns (bool) {
         return forwarder == _trustedForwarder;
     }
 
-    function trustedForwarder() public view returns (address) {
-        return _trustedForwarder;
-    }
-
-    function initialize(address admin, address forwarder) public initializer {
-        _admin = admin;
-        setTrustedForwarder(forwarder);
-    }
-
-    function sayHello(string calldata message) external {
-        _lastMessage = message;
-        emit SayHelloForFree(_msgSender(), message);
-    }
-
-    function getLastMessage() external view returns (string memory) {
-        return _lastMessage;
-    }
+    /**
+     * Storage gap
+     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+     */
+    uint256[50] private __gap;
 }

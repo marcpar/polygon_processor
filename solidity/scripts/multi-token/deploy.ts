@@ -1,9 +1,12 @@
-import { ethers, upgrades } from "hardhat";
+import { ethers, upgrades} from "hardhat";
 
 async function main() {
-  let metaTX = await ethers.getContractFactory("MetaTX");
-  let deployResponse = await upgrades.upgradeProxy('0x281eF3837672cF2d0e57a56123416e332A82a168', metaTX);
+  let nft = await ethers.getContractFactory("MultiToken");
+  let deployResponse = await upgrades.deployProxy(nft, [process.env.ALLOWED_ADDRESS ?? ""], {
+    initializer: 'initialize'
+  });
   await deployResponse.deployed();
+  
   console.log(`Deployed to ${deployResponse.address}`);
 }
 

@@ -1,2 +1,2 @@
 import "./nft";
-import "./metaTX";
+import "./claimToken";

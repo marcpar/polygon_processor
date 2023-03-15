@@ -5,11 +5,12 @@ import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
+import "./AdminUpgradeable.sol";
 
 /**
  * ERC1155 Implementation
  */
-contract Token is Initializable, ContextUpgradeable, ERC1155Upgradeable {
+contract MultiToken is Initializable, AdminUpgradeable, ERC1155Upgradeable {
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
     /**
@@ -24,27 +25,11 @@ contract Token is Initializable, ContextUpgradeable, ERC1155Upgradeable {
     mapping(uint256 => string) _tokenIDtoURIMap;
 
     /**
-     * addresses allowed to mint/burn an asset
-     */
-    mapping(address => bool) _allowedMinters;
-    
-    /**
-     * require allowed minter
-     */
-    modifier onlyAllowedMinters() {
-        require(
-            _allowedMinters[_msgSender()],
-            "Not allowed to mint"
-        );
-        _;
-    }
-    
-    /**
      * initializer
-     * @param allowedMinter initial allowed minter
+     * @param admin initial admin
      */
-    function initialize(address allowedMinter) public initializer {
-        _allowedMinters[allowedMinter] = true;
+    function initialize(address admin) public initializer {
+        __AdminUpgradeable_init(admin);
         _tokenIDCounter.reset();
     }
 
@@ -57,34 +42,10 @@ contract Token is Initializable, ContextUpgradeable, ERC1155Upgradeable {
     }
 
     /**
-     * check whether the address is allowed to mint or burn
-     * @param _address address to check
-     */
-    function isAllowedToMint(address _address) public view returns (bool) {
-        return _allowedMinters[_address];
-    }
-
-    /**
-     * allow an address to mint/burn token
-     * @param addressToAllow address to allow
-     */
-    function externalAllowMinter(address addressToAllow) external onlyAllowedMinters {
-        _allowedMinters[addressToAllow] = true;
-    }
-
-    /**
-     * deny an address to mint/burn token
-     * @param addressToDeny address to deny
-     */
-    function externalDenyMinter(address addressToDeny) external onlyAllowedMinters {
-        _allowedMinters[addressToDeny] = false;
-    }
-
-    /**
      * mint an nft to the caller
      * @param tokenURI uri of the token
      */
-    function externalMintNFT(string calldata tokenURI) external onlyAllowedMinters {
+    function externalMintNFT(string calldata tokenURI) external onlyAdmins {
         _internalMintNFT(tokenURI, _msgSender());
     }
 
@@ -93,8 +54,28 @@ contract Token is Initializable, ContextUpgradeable, ERC1155Upgradeable {
      * @param tokenURI uri of the token
      * @param receiver address that will receive the token
      */
-    function externalMintNFTTo(string calldata tokenURI, address receiver) external onlyAllowedMinters {
+    function externalMintNFTTo(
+        string calldata tokenURI,
+        address receiver
+    ) external onlyAdmins {
         _internalMintNFT(tokenURI, receiver);
+    }
+
+    /**
+     * Transfer nft from a user to another
+     * only the contract admin can call this
+     * @param from owner of the token
+     * @param receiver new owner of the token
+     * @param tokenID id of the token
+     * @param amount amount to be transfered
+     */
+    function externalTransferNFTTo(
+        address from,
+        address receiver,
+        uint256 tokenID,
+        uint256 amount
+    ) external onlyAdmins {
+        _safeTransferFrom(from, receiver, tokenID, amount, "");
     }
 
     /**
@@ -102,11 +83,13 @@ contract Token is Initializable, ContextUpgradeable, ERC1155Upgradeable {
      * @param tokenURI uri of the token
      * @param receiver address that will receive the token
      */
-    function _internalMintNFT(string calldata tokenURI, address receiver) internal {
+    function _internalMintNFT(
+        string calldata tokenURI,
+        address receiver
+    ) internal {
         uint256 currentID = _tokenIDCounter.current();
         _mint(receiver, currentID, 1, "");
         _tokenIDtoURIMap[currentID] = tokenURI;
         _tokenIDCounter.increment();
     }
-
 }
