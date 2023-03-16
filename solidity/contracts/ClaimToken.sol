@@ -57,13 +57,14 @@ contract ClaimToken is
         address nft,
         uint256 tokenId
     ) external {
+        address sender = _msgSender();
         MultiToken multiToken = MultiToken(nft);
         require(
-            multiToken.balanceOf(_msgSender(), tokenId) > 0,
+            multiToken.balanceOf(sender, tokenId) > 0,
             "Sender does not own the asset"
         );
-        multiToken.externalTransferNFTTo(_msgSender(), receiver, tokenId, 1);
+        multiToken.externalTransferNFTTo(sender, receiver, tokenId, 1);
         GasToken gasToken = GasToken(_gasToken);
-        gasToken.externalBurnFrom(_msgSender(), 1);
+        gasToken.externalBurnFrom(sender, 1);
     }
 }

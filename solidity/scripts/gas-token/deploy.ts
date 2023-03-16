@@ -1,12 +1,17 @@
-import { ethers, upgrades} from "hardhat";
+import { ethers, upgrades } from "hardhat";
 
 async function main() {
+  let initialAdminAddress = process.env.WALLET_ADDRESS;
+  if (!initialAdminAddress || initialAdminAddress.length === 0) {
+    throw new Error(`invalid WALLET_ADDRESS: ${initialAdminAddress}`);
+  }
+
   let gasToken = await ethers.getContractFactory("GasToken");
-  let deployResponse = await upgrades.deployProxy(gasToken, [process.env.ALLOWED_ADDRESS ?? "", "0x69015912AA33720b842dCD6aC059Ed623F28d9f7"], {
+  let deployResponse = await upgrades.deployProxy(gasToken, ["Biconomy Gas Token", "BGT", initialAdminAddress], {
     initializer: 'initialize'
   });
   await deployResponse.deployed();
-  
+
   console.log(`Deployed to ${deployResponse.address}`);
 }
 

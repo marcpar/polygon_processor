@@ -1,12 +1,17 @@
-import { ethers, upgrades} from "hardhat";
+import { ethers, upgrades } from "hardhat";
 
 async function main() {
+  let initialAdminAddress = process.env.WALLET_ADDRESS;
+  if (!initialAdminAddress || initialAdminAddress.length === 0) {
+    throw new Error(`invalid WALLET_ADDRESS: ${initialAdminAddress}`);
+  }
+
   let nft = await ethers.getContractFactory("MultiToken");
-  let deployResponse = await upgrades.deployProxy(nft, [process.env.ALLOWED_ADDRESS ?? ""], {
+  let deployResponse = await upgrades.deployProxy(nft, [initialAdminAddress], {
     initializer: 'initialize'
   });
   await deployResponse.deployed();
-  
+
   console.log(`Deployed to ${deployResponse.address}`);
 }
 

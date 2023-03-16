@@ -7,6 +7,10 @@
 			"path": "./jobs/polygon_minter"
 		},
 		{
+			"path": "./jobs/polygon_claimable_processor"
+		},
+
+		{
 			"path": "./solidity"
 		},
 		{

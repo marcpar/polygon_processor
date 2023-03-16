@@ -20,7 +20,7 @@ abstract contract AdminUpgradeable is Initializable {
      * @param initAdmin initial admin
      */
     function __AdminUpgradeable_init(address initAdmin) internal initializer {
-        setAdmin(initAdmin);
+        _admins[initAdmin] = true;
     }
 
     /**

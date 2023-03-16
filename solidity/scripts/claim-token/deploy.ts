@@ -1,12 +1,27 @@
-import { ethers, upgrades} from "hardhat";
+import { ethers, upgrades } from "hardhat";
 
 async function main() {
+  let initialAdminAddress = process.env.WALLET_ADDRESS;
+  if (!initialAdminAddress || initialAdminAddress.length === 0) {
+    throw new Error(`invalid WALLET_ADDRESS: ${initialAdminAddress}`);
+  }
+
+  let trustedForwarderAddress = process.env.TRUSTED_FORWARDER_ADDRESS;
+  if (!trustedForwarderAddress || trustedForwarderAddress.length === 0) {
+    throw new Error(`invalid TRUSTED_FORWARDER_ADDRESS: ${trustedForwarderAddress}`);
+  }
+
+  let gasTokenAddress = process.env.GAS_TOKEN_ADDRESS;
+  if (!gasTokenAddress || gasTokenAddress.length === 0) {
+    throw new Error(`invalid GAS_TOKEN_ADDRESS: ${gasTokenAddress}`);
+  }
+
   let claimToken = await ethers.getContractFactory("ClaimToken");
-  let deployResponse = await upgrades.deployProxy(claimToken, [process.env.ALLOWED_ADDRESS ?? "", "0x69015912AA33720b842dCD6aC059Ed623F28d9f7"], {
+  let deployResponse = await upgrades.deployProxy(claimToken, [initialAdminAddress, trustedForwarderAddress, gasTokenAddress], {
     initializer: 'initialize'
   });
   await deployResponse.deployed();
-  
+
   console.log(`Deployed to ${deployResponse.address}`);
 }
 

@@ -1,2 +1,3 @@
-import "./nft";
+import "./multiToken";
 import "./claimToken";
+import "./gasToken";

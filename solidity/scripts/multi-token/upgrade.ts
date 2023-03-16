@@ -1,11 +1,14 @@
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
-  let nft = await ethers.getContractFactory("MultiToken");
-  const PROXY_ADDRESS = process.env.PROXY_ADDRESS ?? "";
-  console.log(PROXY_ADDRESS);
+  let contractAddress = process.env.MULTI_TOKEN_ADDRESS;
+  if (!contractAddress || contractAddress.length === 0) {
+    throw new Error(`invalid MULTI_TOKEN_ADDRESS: ${contractAddress}`);
+  }
 
-  let deployResponse = await upgrades.upgradeProxy(PROXY_ADDRESS, nft);
+  let nft = await ethers.getContractFactory("MultiToken");
+
+  let deployResponse = await upgrades.upgradeProxy(contractAddress, nft);
   await deployResponse.deployed();
   console.log(`Deployed to ${deployResponse.address}`);
 }

@@ -1,8 +1,13 @@
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
+  let contractAddress = process.env.GAS_TOKEN_ADDRESS;
+  if (!contractAddress || contractAddress.length === 0) {
+    throw new Error(`invalid GAS_TOKEN_ADDRESS: ${contractAddress}`)
+  }
+
   let gasToken = await ethers.getContractFactory("GasToken");
-  let deployResponse = await upgrades.upgradeProxy('0x281eF3837672cF2d0e57a56123416e332A82a168', gasToken);
+  let deployResponse = await upgrades.upgradeProxy(contractAddress, gasToken);
   await deployResponse.deployed();
   console.log(`Deployed to ${deployResponse.address}`);
 }

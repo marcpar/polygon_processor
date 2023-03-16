@@ -48,4 +48,8 @@ contract GasToken is Initializable, AdminUpgradeable, ERC20Upgradeable {
     ) external onlyAdmins {
         _burn(owner, amount);
     }
+
+    function decimals() public pure override returns (uint8) {
+        return 0;
+    }
 }
