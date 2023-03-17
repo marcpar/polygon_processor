@@ -1,5 +1,5 @@
 import env from 'dotenv';
-import { Logger } from './lib/logger';
+import { Logger } from 'lib/dist/util';
 
 
 type Config = {
@@ -7,7 +7,7 @@ type Config = {
     AzureAccountKey: string,
     Topic: string,
     PrivateKey: string,
-    ProxyAddress: string,
+    MultiTokenAddress: string,
     DefaultCallbackURL: string,
     MaxJobs: number,
     RpcUrl: string,
@@ -34,8 +34,8 @@ function LoadConfig() {
         Logger().error("AZURE_ACCOUNT_KEY is a required environment variable");
         process.exit(1);
     }
-    if (!process.env.PROXY_ADDRESS) {
-        Logger().error("PROXY_ADDRESS is a required environment variable");
+    if (!process.env.MULTI_TOKEN_ADDRESS) {
+        Logger().error("MULTI_TOKEN_ADDRESS is a required environment variable");
         process.exit(1);
     }
     if (!process.env.PRIVATE_KEY) {
@@ -57,7 +57,7 @@ function LoadConfig() {
             AzureAccountKey: process.env.AZURE_ACCOUNT_KEY,
             Topic: process.env.TOPIC,
             PrivateKey: process.env.PRIVATE_KEY,
-            ProxyAddress: process.env.PROXY_ADDRESS,
+            MultiTokenAddress: process.env.MULTI_TOKEN_ADDRESS,
             DefaultCallbackURL: process.env.DEFAULT_CALLBACK_URL,
             MaxJobs: process.env.MAX_JOBS ? parseInt(process.env.MAX_JOBS) : 0,
             RpcUrl: process.env.RPC_URL,

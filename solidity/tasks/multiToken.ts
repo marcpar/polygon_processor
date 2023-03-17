@@ -1,7 +1,7 @@
 import { task } from "hardhat/config";
 import { string } from "hardhat/internal/core/params/argumentTypes";
 
-task('multi-token mint', 'mints an nft')
+task('multi-token:mint', 'mints an nft')
     .addParam('tokenUri', 'uri of the token', undefined, string, false)
     .setAction(async (args, hre) => {
         let multiTokenAddress = process.env.MULTI_TOKEN_ADDRESS;
@@ -18,7 +18,7 @@ task('multi-token mint', 'mints an nft')
         }
     });
 
-task('multi-token uri', 'gets uri for token_id')
+task('multi-token:uri', 'gets uri for token_id')
     .addParam('tokenId', 'id of the token', undefined, string, false)
     .setAction(async (args, hre) => {
         let multiTokenAddress = process.env.MULTI_TOKEN_ADDRESS;
@@ -32,7 +32,7 @@ task('multi-token uri', 'gets uri for token_id')
         console.log(uri);
     });
 
-task('multi-token set-admin', 'sets admin')
+task('multi-token:set-admin', 'sets admin')
     .addParam('address', 'address of the new admin', undefined, string, false)
     .setAction(async (args, hre) => {
         let multiTokenAddress = process.env.MULTI_TOKEN_ADDRESS;

@@ -5,14 +5,21 @@ WORKDIR /workdir
 COPY . /workdir
 
 RUN apt-get update && apt-get -y install git
+
+# build solidity lib
 RUN cd /workdir/solidity && \
     npm install && \
     npx hardhat compile
 
+# build lib
+RUN cd /workdir/lib && \
+    npm install && \
+    npm run build
+
+# build app
 RUN cd /workdir/jobs/polygon_minter && \
     npm install && \
     npm run build
-    
 
 FROM node:16.6.2-alpine3.14 as runtime
 

@@ -28,7 +28,7 @@ function InitLogger(): Logger {
         level: process.env.LOG_LEVEL ?? 'info',
         format: format.combine(
             CustomFormat({
-                service_name: 'polygon_processor'
+                service_name: 'arweave_processor'
             }),
             format.json()
         ),

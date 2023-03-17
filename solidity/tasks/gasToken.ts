@@ -1,7 +1,7 @@
 import { task } from "hardhat/config";
 import { string, int } from "hardhat/internal/core/params/argumentTypes";
 
-task('gas-token mint', 'mints a gas token to the specified address')
+task('gas-token:mint', 'mints a gas token to the specified address')
     .addParam('to', 'receiver of the token', undefined, string, false)
     .addParam('amount', 'amount of token to mint', 1, int, true)
     .setAction(async (args, hre) => {
@@ -18,7 +18,7 @@ task('gas-token mint', 'mints a gas token to the specified address')
         }
     });
 
-task('gas-token burn', 'burns a gas token')
+task('gas-token:burn', 'burns a gas token')
     .addParam('from', 'address to burn token from', undefined, string, false)
     .addParam('amount', 'amount of token to burn', 1, int, true)
     .setAction(async (args, hre) => {
@@ -34,8 +34,8 @@ task('gas-token burn', 'burns a gas token')
             console.log(event);
         }
     });
-    
-task('gas-token set-admin', 'sets admin')
+
+task('gas-token:set-admin', 'sets admin')
     .addParam('address', 'address of the new admin', undefined, string, false)
     .setAction(async (args, hre) => {
         let gasTokenAddress = process.env.GAS_TOKEN_ADDRESS;

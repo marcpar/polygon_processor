@@ -1,0 +1,41 @@
+# NOTE: This dockerfile should be built from the root context of the monorepository
+FROM node:16.6.2 as build
+
+WORKDIR /workdir
+COPY . /workdir
+
+RUN apt-get update && apt-get -y install git
+
+# build solidity lib
+RUN cd /workdir/solidity && \
+    npm install && \
+    npx hardhat compile
+
+# build lib
+RUN cd /workdir/lib && \
+    npm install && \
+    npm run build
+
+# build app
+RUN cd /workdir/jobs/polygon_claimable_processor && \
+    npm install && \
+    npm run build
+
+FROM node:16.6.2-alpine3.14 as runtime
+
+WORKDIR /home/polygon_claimable_processor
+
+COPY --from=build /workdir/jobs/polygon_claimable_processor/dist /home/polygon_claimable_processor/dist
+
+ENV NODE_ENV production
+
+RUN chown -R node:node /home/polygon_claimable_processor && \
+    find /home/polygon_claimable_processor -type f -exec chmod 400 {} \; && \
+    find /home/polygon_claimable_processor -type d -exec chmod 500 {} \;
+
+LABEL Maintainer="Marc Par <marc.par10@gmail.com>"
+LABEL Repository="https://github.com/marcpar/polygon_processor"
+USER node
+
+ENTRYPOINT ["sh", "-c"]
+CMD ["node dist/index.js"]

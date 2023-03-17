@@ -1,11 +1,12 @@
-import { Job, Payload, Queue } from '../queue/common';
+import { Payload, ParsePayloadFromJSONString } from '../queue/common';
 import axios, { AxiosError } from 'axios';
-import { Sleep } from '../lib/util';
-import { Logger } from '../lib/logger';
+import { Sleep, Logger } from 'lib/dist/util';
 import { Emit } from './event';
 import { Mint } from './eth';
+import { Queue } from 'lib/dist/queue';
+import { withRetry } from 'lib/dist/util/retry';
 
-let _queue: Queue;
+let _queue: Queue<string>;
 
 /**
  * Number of jobs currently being processed
@@ -17,7 +18,7 @@ let _processing: number = 0;
  */
 let _maxProcessingJobs = 0;
 
-function SetQueue(queue: Queue) {
+function SetQueue(queue: Queue<string>) {
     _queue = queue;
 }
 
@@ -38,9 +39,17 @@ async function loop() {
         await Sleep(5000);
         return;
     }
-    let job!: Job;
+    let payload!: Payload[];
     try {
-        job = await _queue.getNextJob();
+        let parseResult = ParsePayloadFromJSONString(await _queue.getNextJob());
+        if (parseResult.Error) {
+            Logger().error(parseResult.Error)
+            return;
+        } else if (!parseResult.Payload) {
+            Logger().error(`payload is ${parseResult.Payload}`)
+            return;
+        }
+        payload = parseResult.Payload;
     } catch (e) {
         Logger().error(e);
         return;
@@ -48,20 +57,19 @@ async function loop() {
 
     _processing++;
     (async () => {
-        await processJob(job);
+        await processJob(payload);
     })().then(async () => {
-        await job.complete();
     }).catch(async (e) => {
-        await job.requeue();
+        
         let err = e as Error;
-        for (const payload of job.payload) {
-            let err_message = `Requeing job ${payload.JobId}, failed due to error: ${err.message}\n${err.stack ?? ''}`;
+        for (const _payload of payload) {
+            let err_message = `Requeing job ${_payload.JobId}, failed due to error: ${err.message}\n${err.stack ?? ''}`;
             Logger().error(err_message, {
                 log_type: 'job_failed',
-                job_id: payload.JobId
+                job_id: _payload.JobId
             });
             Emit({
-                JobId: payload.JobId,
+                JobId: _payload.JobId,
                 Event: "failure",
                 Message: err_message,
                 Details: {
@@ -76,18 +84,22 @@ async function loop() {
     });
 }
 
-async function processJob(job: Job) {
+async function processJob(payload: Payload[]) {
     Emit({
         Event: 'started',
-        JobId: job.payload[0].JobId,
-        Message: `Processing job: ${job.payload[0].JobId}`
+        JobId: payload[0].JobId,
+        Message: `Processing job: ${payload[0].JobId}`
     });
-    Logger().info(`minting: ${job.payload[0].ArweaveTxnId}`);
-    let result = await Mint(`ar://${job.payload[0].ArweaveTxnId}/opensea.json`);
+    Logger().info(`minting: ${payload[0].ArweaveTxnId}`);
+    
+    let result = withRetry(async () => {
+        return await Mint(`ar://${payload[0].ArweaveTxnId}/opensea.json`);
+    }, 5);
+
     Emit({
         Event: 'success',
-        JobId: job.payload[0].JobId,
-        Message: `Successfullly processed: ${job.payload[0].JobId}`,
+        JobId: payload[0].JobId,
+        Message: `Successfullly processed: ${payload[0].JobId}`,
         Details: result
     });
 }
