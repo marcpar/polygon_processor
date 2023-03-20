@@ -11,6 +11,16 @@ services:
     volumes:
       - .:/home/app
 
+  polygon_claimable_processor:
+    build:
+      context: jobs/polygon_claimable_processor
+      dockerfile: local.dockerfile
+    entrypoint: npm
+    command: [ run, dev:watch ]
+    working_dir: /home/app/jobs/polygon_claimable_processor
+    volumes:
+      - .:/home/app
+
   polygon_callback:
     build:
       context: jobs/polygon_minter

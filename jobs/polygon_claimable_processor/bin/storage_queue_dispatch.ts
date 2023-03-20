@@ -3,7 +3,11 @@ import {
     QueueServiceClient,
     StorageSharedKeyCredential
 } from "@azure/storage-queue";
-import { Logger } from "lib/dist/util/index";
+import {
+    randomUUID
+} from 'crypto';
+import { Logger } from "lib/dist/util";
+
 
 LoadConfig();
 
@@ -12,8 +16,14 @@ let config = GetConfig();
 (async () => {
     let qsClient = new QueueServiceClient(`https://${config.AzureAccountName}.queue.core.windows.net`, new StorageSharedKeyCredential(config.AzureAccountName, config.AzureAccountKey));
     let qClient = qsClient.getQueueClient(config.Topic);
-    await qClient.createIfNotExists();
-    let response = await qClient.clearMessages();
-    Logger().info(response);
+    
+    let batch = new Array();
+    for (let index = 0; index < 1; index++) {
+        let uuid = randomUUID();
+        batch.push({ "JobId": uuid, "TokenId": 4});
+    }
+    let response = await qClient.sendMessage(JSON.stringify(batch));
+
+    Logger().info(response.messageId);
 })();
 

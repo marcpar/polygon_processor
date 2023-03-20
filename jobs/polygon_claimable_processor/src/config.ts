@@ -8,10 +8,12 @@ type Config = {
     Topic: string,
     PrivateKey: string,
     MultiTokenAddress: string,
+    MultiTokenMinterAddress: string,
     GasTokenAddress: string,
     DefaultCallbackURL: string,
     MaxJobs: number,
-    RpcUrl: string
+    RpcUrl: string,
+    ClaimableBaseURL: string,
 }
 
 let config: Config;
@@ -38,6 +40,10 @@ function LoadConfig() {
         Logger().error("MULTI_TOKEN_ADDRESS is a required environment variable");
         process.exit(1);
     }
+    if (!process.env.MULTI_TOKEN_MINTER_ADDRESS) {
+        Logger().error("MULTI_TOKEN_MINTER_ADDRESS is a required environment variable");
+        process.exit(1);
+    }
     if (!process.env.GAS_TOKEN_ADDRESS) {
         Logger().error("GAS_TOKEN_ADDRESS is a required environment variable");
         process.exit(1);
@@ -50,6 +56,10 @@ function LoadConfig() {
         Logger().error("RPC_URL is a required environment variable");
         process.exit(1);
     }
+    if (!process.env.CLAIMABLE_BASE_URL) {
+        Logger().error("CLAIMABLE_BASE_URL is a required environment variable");
+        process.exit(1);
+    }
 
     try {
         config = {
@@ -58,11 +68,12 @@ function LoadConfig() {
             Topic: process.env.TOPIC,
             PrivateKey: process.env.PRIVATE_KEY,
             MultiTokenAddress: process.env.MULTI_TOKEN_ADDRESS,
+            MultiTokenMinterAddress: process.env.MULTI_TOKEN_MINTER_ADDRESS,
             GasTokenAddress: process.env.GAS_TOKEN_ADDRESS,
             DefaultCallbackURL: process.env.DEFAULT_CALLBACK_URL,
             MaxJobs: process.env.MAX_JOBS ? parseInt(process.env.MAX_JOBS) : 0,
             RpcUrl: process.env.RPC_URL,
-            
+            ClaimableBaseURL: process.env.CLAIMABLE_BASE_URL
         }
     } catch (e) {
         let err = e as Error;

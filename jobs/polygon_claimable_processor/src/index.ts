@@ -16,8 +16,10 @@ import { CreateAzureStorageQueue } from 'lib/dist/queue';
         networkID: '80001',
         gasTokenAddress: config.GasTokenAddress,
         multiTokenAddress: config.MultiTokenAddress,
+        multiTokenMinterAddress: config.MultiTokenMinterAddress,
         privateKey: config.PrivateKey,
-        rpcURL: 'https://polygon-testnet-rpc.allthatnode.com:8545'
+        rpcURL: 'https://polygon-testnet-rpc.allthatnode.com:8545',
+        claimableBaseURL: config.ClaimableBaseURL
     });
     SetMaxJobs(config.MaxJobs ?? 5);
 

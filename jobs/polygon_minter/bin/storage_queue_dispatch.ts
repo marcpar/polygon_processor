@@ -6,7 +6,7 @@ import {
 import {
     randomUUID
 } from 'crypto';
-import { Logger } from "../src/lib/logger";
+import { Logger } from "lib/dist/util";
 
 
 LoadConfig();

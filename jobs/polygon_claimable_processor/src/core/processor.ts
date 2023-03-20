@@ -63,7 +63,7 @@ async function loop() {
         
         let err = e as Error;
         for (const _payload of payload) {
-            let err_message = `Requeing job ${_payload.JobId}, failed due to error: ${err.message}\n${err.stack ?? ''}`;
+            let err_message = `job ${_payload.JobId}, failed due to error: ${err.message}\n${err.stack ?? ''}`;
             Logger().error(err_message, {
                 log_type: 'job_failed',
                 job_id: _payload.JobId
@@ -92,7 +92,7 @@ async function processJob(payload: Payload[]) {
     });
     Logger().info(`creating claimable for : ${payload[0].TokenId}`);
     let tokenId = parseInt(payload[0].TokenId);
-    let result = withRetry(async () => {
+    let result = await withRetry(async () => {
         return await CreateClaimable(tokenId);
     }, 5);
 

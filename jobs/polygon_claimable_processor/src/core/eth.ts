@@ -7,13 +7,19 @@ type EthConfig = {
     networkID: string,
     rpcURL: string,
     gasTokenAddress: string,
-    multiTokenAddress: string
+    multiTokenAddress: string,
+    multiTokenMinterAddress: string,
+    claimableBaseURL: string
 }
 
 type ClaimableResult = {
-    ContractAddress: string,
-    TokenId: string,
     ClaimableURL: string
+}
+
+type Claimable = {
+    PrivateKey: string,
+    TokenContractAddress: string,
+    TokenId: number
 }
 
 const TRANSFER_SINGLE_EVENT = 'TransferSingle'
@@ -33,7 +39,20 @@ function ConfigureEth(config: EthConfig) {
 }
 
 async function CreateClaimable(tokenId: number): Promise<ClaimableResult> {
-    throw new Error('Not Implemented');
+    let newWallet = Wallet.createRandom();
+    await (await _multiToken.externalTransferNFTTo(_config.multiTokenMinterAddress, newWallet.address, tokenId, 1)).wait();
+    await (await _gasToken.externalMintTo(newWallet.address, 2)).wait();
+
+    let claimableURL = new URL(`${_config.claimableBaseURL}/${_config.multiTokenAddress}/${tokenId}`);
+    claimableURL.hash = Buffer.from(JSON.stringify({
+        PrivateKey: newWallet.privateKey,
+        TokenContractAddress: _config.multiTokenAddress,
+        TokenId: tokenId
+    } as Claimable), 'utf-8').toString('base64url');
+
+    return {
+        ClaimableURL: claimableURL.toString()
+    }
 }
 
 export {

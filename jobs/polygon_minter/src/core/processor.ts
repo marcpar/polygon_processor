@@ -1,5 +1,4 @@
 import { Payload, ParsePayloadFromJSONString } from '../queue/common';
-import axios, { AxiosError } from 'axios';
 import { Sleep, Logger } from 'lib/dist/util';
 import { Emit } from './event';
 import { Mint } from './eth';
@@ -92,7 +91,7 @@ async function processJob(payload: Payload[]) {
     });
     Logger().info(`minting: ${payload[0].ArweaveTxnId}`);
     
-    let result = withRetry(async () => {
+    let result = await withRetry(async () => {
         return await Mint(`ar://${payload[0].ArweaveTxnId}/opensea.json`);
     }, 5);
 

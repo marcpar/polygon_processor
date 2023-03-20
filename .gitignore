@@ -1,2 +1,3 @@
 .vscode
-polygon_minter.env
+*.env
+.env

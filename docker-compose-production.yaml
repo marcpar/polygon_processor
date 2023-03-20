@@ -8,3 +8,11 @@ services:
     env_file:
       - polygon_minter.env
     restart: unless-stopped
+  
+  polygon_claimable_processor:
+    build:
+      context: .
+      dockerfile: jobs/polygon_claimable_processor/dockerfile
+    env_file:
+      - polygon_claimable_processor.env
+    restart: unless-stopped
