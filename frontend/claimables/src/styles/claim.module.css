@@ -1,0 +1,131 @@
+.main_container {
+    width: fit-content;
+    height: auto;
+    margin: auto;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+.greetings {
+    color: #000000;
+    max-width: 920px;
+    margin: auto;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.greetings > p {
+    font-size: 1.2em;
+}
+
+.greetings > p.full_name {
+    margin: 0;
+    font-size: 2em;
+}
+
+.hidden {
+    display: none;
+}
+
+.media_container {
+    height: 100%;
+    margin: auto;
+}
+
+.media_container:hover {
+    cursor: pointer;
+}
+
+.card {
+    width: fit-content;
+    min-width: 300px;
+    margin: 20px auto;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    padding-bottom: 0px;
+    text-align: left;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+.card_header {
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.card_body {
+    text-align: left;
+    min-height: 240px;
+}
+
+.card_body > hr {
+    border: 1px solid rgb(230,230,230);
+    
+}
+
+.card_footer {
+    padding: 15px;
+    padding-right: 0;
+    margin: auto;
+    text-align: right;
+    min-height: 32px;
+}
+
+.card_footer > button {
+    background-color: black;
+    border: none;
+    border-radius: 15px;
+    color: rgb(143, 204, 80);
+    font-weight: bold;
+    padding: 5px 10px;
+    font-size: 120%;
+}
+
+
+.card_footer > button:hover {
+    cursor: pointer;
+}
+
+.card_footer > button:disabled {
+
+}
+
+.card_footer > button:disabled:hover {
+    cursor: not-allowed;
+}
+
+.loader_container {
+    text-align: center;
+    margin-top: 300px;
+}
+
+.podium_logo {
+    display: block;
+    height: 40px;
+    margin-bottom: 55px;
+}
+
+
+@media only screen and (min-width: 1200px) {
+    .card {
+        height: 100%;
+    }
+    .flex_container {
+        display: flex;
+        margin: auto;
+        justify-content: center;
+    }
+    
+    .flex_container > :nth-child(1) {
+        order: 2;
+    }
+    .flex_container > :nth-child(2) {
+        order: 1;
+        margin: 0 20px 0 auto;
+    }
+    .flex_container > :nth-child(3) {
+        order: 3;
+        margin: 0 auto 0 20px;
+    }
+}
