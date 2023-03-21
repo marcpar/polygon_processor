@@ -30,3 +30,15 @@ services:
     working_dir: /home/app/jobs/polygon_minter
     volumes:
       - .:/home/app
+
+  claimables-front:
+    build:
+      context: frontend/claimables
+      dockerfile: local.dockerfile
+    entrypoint: npm
+    command: [ run, dev ]
+    working_dir: /home/app/frontend/claimables
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/home/app
