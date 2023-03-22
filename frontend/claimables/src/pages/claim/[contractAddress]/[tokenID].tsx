@@ -6,6 +6,7 @@ import ordinal from 'ordinal';
 import { useState } from 'react';
 import Media from '@/components/media/Media';
 import { BrowserProvider, Provider } from 'ethers';
+import { claimNFT, parseFromBase64String } from '@/lib/claimable/claim';
 
 
 export default function ClaimNFT() {
@@ -18,6 +19,7 @@ export default function ClaimNFT() {
 
     function claimOnClick() {
         alert(`${contractAddress}/${tokenID}`);
+        claimNFT(parseFromBase64String('eyJQcml2YXRlS2V5IjoiMHg4ODIwZmFiNGI3NDViMWU0OTQ5YTJmZDE4MjU5OWNlYTA3ZDllOGU1YTRjYTIzODRkMjcxNzgzMzU0ZTZiYzU1IiwiVG9rZW5Db250cmFjdEFkZHJlc3MiOiIweDVFNkNFZTNmNjhDNWRlYzMyQWQ0N2FjMkZkMUI0RUUxOTdDNTc1NTciLCJUb2tlbklkIjo3fQ'));
     }
 
     function onClickDownload() {
@@ -27,6 +29,7 @@ export default function ClaimNFT() {
             metamask.getSigner().then(async (signer) => {
                 let msg = await signer.signMessage('hello');
                 alert(msg);
+                
             })
 
         }

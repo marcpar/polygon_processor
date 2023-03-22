@@ -12,6 +12,8 @@ import { Logger } from "lib/dist/util";
 LoadConfig();
 
 let config = GetConfig();
+let tokenId = process.argv[2];
+console.log(tokenId);
 
 (async () => {
     let qsClient = new QueueServiceClient(`https://${config.AzureAccountName}.queue.core.windows.net`, new StorageSharedKeyCredential(config.AzureAccountName, config.AzureAccountKey));
@@ -20,7 +22,7 @@ let config = GetConfig();
     let batch = new Array();
     for (let index = 0; index < 1; index++) {
         let uuid = randomUUID();
-        batch.push({ "JobId": uuid, "TokenId": 4});
+        batch.push({ "JobId": uuid, "TokenId": tokenId});
     }
     let response = await qClient.sendMessage(JSON.stringify(batch));
 

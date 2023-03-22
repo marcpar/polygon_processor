@@ -51,9 +51,9 @@ task('claimToken:claim', 'claims the claimable')
         if (!biconomyApiKey || biconomyApiKey.length === 0) {
             throw new Error(`invalid BICONOMY_API_KEY: ${biconomyApiKey}`);
         }
-        
+
         let wallet = new hre.ethers.Wallet(args.key);
-        
+
         let biconomy = new Biconomy(hre.network.provider as any, {
             apiKey: biconomyApiKey,
             contractAddresses: [claimTokenAddress],
@@ -75,17 +75,17 @@ task('claimToken:claim', 'claims the claimable')
         }, (err, resp) => { });
 
         await new Promise((resolve, reject) => {
-                biconomy.on("txMined", data => {
-                    console.log(data);
-                    resolve(data);
-                });
-                biconomy.on("onError", (data: { error: any; transactionId: string }) => {
-                    console.log(data);
-                    reject();
-                });
-                biconomy.on("txHashGenerated", (data: { transactionId: string; transactionHash: string; }) => {
-                    console.log(data);
-                });
-                setTimeout(reject, 100000);
+            biconomy.on("txMined", data => {
+                console.log(data);
+                resolve(data);
             });
+            biconomy.on("onError", (data: { error: any; transactionId: string }) => {
+                console.log(data);
+                reject();
+            });
+            biconomy.on("txHashGenerated", (data: { transactionId: string; transactionHash: string; }) => {
+                console.log(data);
+            });
+            setTimeout(reject, 100000);
         });
+    });

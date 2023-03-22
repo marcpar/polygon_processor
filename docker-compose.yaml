@@ -35,7 +35,7 @@ services:
     build:
       context: frontend/claimables
       dockerfile: local.dockerfile
-    entrypoint: npm
+    entrypoint: yarn
     command: [ run, dev ]
     working_dir: /home/app/frontend/claimables
     ports:
