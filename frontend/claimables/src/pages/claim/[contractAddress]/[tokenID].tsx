@@ -3,23 +3,26 @@ import style from '@/styles/claim.module.css';
 import Tilt from 'react-parallax-tilt';
 import Podium from '@/assets/PODIUM-VirtualMedal.png';
 import ordinal from 'ordinal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Media from '@/components/media/Media';
 import { BrowserProvider, Provider } from 'ethers';
 import { claimNFT, parseFromBase64String } from '@/lib/claimable/claim';
+import { Claimable, getClaimable } from '@/service';
+import { GridLoader } from 'react-spinners';
 
 
 export default function ClaimNFT() {
     const router = useRouter();
+    
     let contractAddress = router.query.contractAddress as string;
     let tokenID = router.query.tokenID as string;
+    let [claimable, setClaimable] = useState<Claimable | undefined>(undefined);
     let [isClaimable, setIsClaimable] = useState<boolean>(true);
     let [isAlreadyClaimed, setIsAlreadyClaimed] = useState<boolean>(false);
     let [isMediaLoading, setIsMediaLoading] = useState<boolean>(true);
 
-    function claimOnClick() {
-        alert(`${contractAddress}/${tokenID}`);
-        claimNFT(parseFromBase64String('eyJQcml2YXRlS2V5IjoiMHg4ODIwZmFiNGI3NDViMWU0OTQ5YTJmZDE4MjU5OWNlYTA3ZDllOGU1YTRjYTIzODRkMjcxNzgzMzU0ZTZiYzU1IiwiVG9rZW5Db250cmFjdEFkZHJlc3MiOiIweDVFNkNFZTNmNjhDNWRlYzMyQWQ0N2FjMkZkMUI0RUUxOTdDNTc1NTciLCJUb2tlbklkIjo3fQ'));
+    function claimOnClick() { 
+        claimNFT(parseFromBase64String(window.location.hash));
     }
 
     function onClickDownload() {
@@ -29,30 +32,37 @@ export default function ClaimNFT() {
             metamask.getSigner().then(async (signer) => {
                 let msg = await signer.signMessage('hello');
                 alert(msg);
-                
-            })
-
+            });
         }
-
     }
 
-    let fullName = 'Participant';
-    let racePosition = '1';
-    let groupName = 'raceGroup';
-    let eventName = 'eventName';
-    let eventDate = 'Event Date';
+    useEffect(() => {
+        if (claimable === undefined &&  contractAddress && tokenID) {
+            getClaimable(contractAddress, parseInt(tokenID, 10)).then(claimable => {
+                setClaimable(claimable);
+            })
+        }
+    });
+
+    if (claimable === null || claimable === undefined) {
+        return (
+            <div className={style.loader_container}>
+                <GridLoader color={"rgb(0, 98, 190)"} />
+            </div>
+        )
+    }
 
     return (
         <div className={style.main_container}>
             <img alt="podium_logo" className={style.podium_logo} src={Podium.src} />
             <div className={style.greetings}>
-                <p><b>Congratulations {fullName} for coming {ordinal(parseInt(racePosition, 10))} in {groupName} at the {eventName}, {eventDate}.</b></p>
+                <p><b>Congratulations {claimable.metadata.name} for coming {ordinal(parseInt(claimable.metadata.position, 10))} in {claimable.metadata.group} at the {claimable.metadata.event}, {claimable.metadata.date}.</b></p>
                 <p>Your virtual medal is ready to claim as an NFT, featuring many benefits. Or simply download the media file as a digital collectible.</p>
             </div>
             <div className={style.flex_container}>
                 <Tilt tiltReverse={true} tiltMaxAngleX={7} tiltMaxAngleY={7} glareReverse={true} >
                     <div className={style.media_container}>
-                        <Media src={`https://arweave.net/TRTM67VNFsUzggHpVrlgyl-StaLUvC4p0lggBFj323Y/nft.mp4`} isLoadingSetter={setIsMediaLoading} />
+                        <Media src={claimable.uri + '/.mp4'} isLoadingSetter={setIsMediaLoading} />
                     </div>
                 </Tilt>
                 <div className={style.card}>

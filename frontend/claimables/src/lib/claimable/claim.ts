@@ -1,7 +1,7 @@
 import { BrowserProvider, Wallet, Contract, Interface } from "ethers";
 import { buildForwardTxRequest, getBiconomyForwarderConfig, getDataToSignForPersonalSign, sendTransaction } from "./biconomyHelpers";
 
-type Claimable = {
+type ClaimDetails = {
   PrivateKey: string,
   TokenContractAddress: string,
   TokenId: number
@@ -184,13 +184,19 @@ const abi = [
   }
 ];
 
-async function claimNFT(claimable: Claimable): Promise<void> {
+async function claimNFT(claimable: ClaimDetails): Promise<void> {
   console.log(claimable);
+  
   let ethereum = (window as any).ethereum;
   if (!ethereum) {
     throw new Error('please install metamask');
   }
   let browser = new BrowserProvider(ethereum);
+  let result = await browser.listAccounts();
+  console.log(result);
+  (await browser.getSigner()).signMessage('hello');
+  return; 
+
 
   let receiver = (await browser.getSigner()).address;
   let wallet = new Wallet(claimable.PrivateKey, browser);
@@ -233,16 +239,16 @@ async function claimNFT(claimable: Claimable): Promise<void> {
 
 }
 
-function parseFromString(str: string): Claimable {
+function parseFromString(str: string): ClaimDetails {
   return JSON.parse(str);
 }
 
-function parseFromBase64String(str: string): Claimable {
+function parseFromBase64String(str: string): ClaimDetails {
   return parseFromString(Buffer.from(str, 'base64').toString('utf-8'));
 }
 
 export type {
-  Claimable
+  ClaimDetails
 }
 
 export {
