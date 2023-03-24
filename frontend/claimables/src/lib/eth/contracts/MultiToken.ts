@@ -455,8 +455,8 @@ class MultiToken extends Wrapper {
      * @param holder address to check balance
      * @param tokenId id of the token to check balance
      */
-    public balanceOf(holder: string, tokenId: string): Promise<number> {
-        return this._contract.balanceOf(holder, tokenId);
+    public async balanceOf(holder: string, tokenId: number): Promise<number> {
+        return Number(await this._contract.balanceOf(holder, tokenId));
     }
 
     public uri(tokenId: number): Promise<string> {

@@ -1,7 +1,9 @@
 import { ResolveArweaveURIToGateway } from "@/lib/arweave";
+import { ClaimDetails } from "@/lib/claimable/claim";
 import { MultiToken } from "@/lib/eth";
+import { getWindowEthereumProvider } from "@/lib/eth/provider";
 import { GetOpenSeaMetadataFromURI, OpenSeaMetadata } from "@/lib/opensea";
-import { BrowserProvider } from 'ethers';
+import { BrowserProvider, Wallet } from 'ethers';
 
 type Claimable = {
     uri: string,
@@ -17,12 +19,8 @@ type ClaimableMetadata = {
 }
 
 async function getClaimable(tokenAddress: string, tokenId: number): Promise<Claimable> {
-    let ethereum = (window as any).ethereum;
-    
-    
-    let browserProvider = new BrowserProvider(ethereum);
-    let signer = await browserProvider.getSigner();
-    let multiTokenContract = new MultiToken(tokenAddress, signer);
+    let browserProvider = new BrowserProvider(getWindowEthereumProvider());
+    let multiTokenContract = new MultiToken(tokenAddress, browserProvider);
     let uri = await multiTokenContract.uri(tokenId);
     let metadata = await GetOpenSeaMetadataFromURI(uri);
 
@@ -69,10 +67,23 @@ function getClaimableMetadataFromOpenseaMetadata(meta: OpenSeaMetadata): Claimab
     }
 }
 
+async function checkBalanceOfAddress(address: string, tokenAddress: string, tokenID: number): Promise<number> {
+    let multiTokenContract = new MultiToken(tokenAddress, new BrowserProvider(getWindowEthereumProvider()));
+    return multiTokenContract.balanceOf(address, tokenID);
+}
+
+async function checkIfAlreadyClaimed(claimDetails: ClaimDetails): Promise<boolean> {
+    let address = new Wallet(claimDetails.PrivateKey).address;
+    console.log(await checkBalanceOfAddress(address, claimDetails.TokenContractAddress, claimDetails.TokenId));
+    return await checkBalanceOfAddress(address, claimDetails.TokenContractAddress, claimDetails.TokenId) === 0;
+}
+
 export type {
     Claimable
 }
 
 export {
-    getClaimable
+    getClaimable,
+    checkBalanceOfAddress,
+    checkIfAlreadyClaimed
 }

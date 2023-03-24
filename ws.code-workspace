@@ -4,6 +4,9 @@
 			"path": "."
 		}, 
 		{
+			"path": "./frontend/claimables"
+		},
+		{
 			"path": "./jobs/polygon_minter"
 		},
 		{

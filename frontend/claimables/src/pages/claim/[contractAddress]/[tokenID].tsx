@@ -3,44 +3,71 @@ import style from '@/styles/claim.module.css';
 import Tilt from 'react-parallax-tilt';
 import Podium from '@/assets/PODIUM-VirtualMedal.png';
 import ordinal from 'ordinal';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, MouseEvent } from 'react';
 import Media from '@/components/media/Media';
 import { BrowserProvider, Provider } from 'ethers';
-import { claimNFT, parseFromBase64String } from '@/lib/claimable/claim';
-import { Claimable, getClaimable } from '@/service';
+import { ClaimDetails, claimNFT, parseFromBase64String } from '@/lib/claimable/claim';
+import { checkBalanceOfAddress, checkIfAlreadyClaimed, Claimable, getClaimable } from '@/handler';
 import { GridLoader } from 'react-spinners';
+
 
 
 export default function ClaimNFT() {
     const router = useRouter();
-    
+
     let contractAddress = router.query.contractAddress as string;
     let tokenID = router.query.tokenID as string;
     let [claimable, setClaimable] = useState<Claimable | undefined>(undefined);
-    let [isClaimable, setIsClaimable] = useState<boolean>(true);
+    let [isClaimable, setIsClaimable] = useState<boolean>(false);
     let [isAlreadyClaimed, setIsAlreadyClaimed] = useState<boolean>(false);
     let [isMediaLoading, setIsMediaLoading] = useState<boolean>(true);
+    let [claimDetails, setClaimDetails] = useState<ClaimDetails | undefined>(undefined);
 
-    function claimOnClick() { 
-        claimNFT(parseFromBase64String(window.location.hash));
-    }
-
-    function onClickDownload() {
-        let eth = (window as any).ethereum;
-        if (eth) {
-            let metamask = new BrowserProvider(eth);
-            metamask.getSigner().then(async (signer) => {
-                let msg = await signer.signMessage('hello');
-                alert(msg);
+    function claimOnClick() {
+        if (claimDetails) {
+            claimNFT(claimDetails).then(() => {
+                setIsAlreadyClaimed(true);
+                window.location.href = `https://testnets.opensea.io/assets/mumbai/${claimDetails?.TokenContractAddress}/${claimDetails?.TokenId}`
+            }).catch(e => {
+                throw new Error(e);
             });
         }
     }
 
+    function onClickDownload(e: MouseEvent<HTMLButtonElement>) {
+        let anchor = document.createElement<"a">("a");
+        let link = `${claimable?.uri}`;
+        let button = e.currentTarget;
+        button.disabled = true;
+        fetch(link).then(async data => {
+            anchor.href = URL.createObjectURL(await data.blob());;
+            anchor.download = link.split('/').pop() ?? "nft";
+            anchor.click();
+        }).finally(() => {
+            button.disabled = false;
+        });
+    }
+
     useEffect(() => {
-        if (claimable === undefined &&  contractAddress && tokenID) {
-            getClaimable(contractAddress, parseInt(tokenID, 10)).then(claimable => {
+        if (claimable === undefined && contractAddress && tokenID) {
+            getClaimable(contractAddress, parseInt(tokenID, 10)).then(async (claimable) => {
                 setClaimable(claimable);
+            });
+        }
+    });
+
+    useEffect(() => {
+        if (!isAlreadyClaimed && claimDetails) {
+            checkIfAlreadyClaimed(claimDetails).then(async (isClaimed) => {
+                setIsAlreadyClaimed(isClaimed);
+                setIsClaimable(!isClaimed);
             })
+        }
+    });
+
+    useEffect(() => {
+        if (!claimDetails) {
+            setClaimDetails(parseFromBase64String(window.location.hash));
         }
     });
 
