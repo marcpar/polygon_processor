@@ -7,7 +7,7 @@
 | `AZURE_ACCOUNT_KEY` | **REQUIRED**. azure secret key |
 | `TOPIC` | **REQUIRED**. name of the topic |
 | `PRIVATE_KEY`| **REQUIRED**. private key of the wallet that will mint the nft |
-| `CONTRACT_ADDRESS` | **REQUIRED**. address of the nft smart contract |
+| `MULTI_TOKEN_ADDRESS` | **REQUIRED**. address of the nft smart contract |
 | `DEFAULT_CALLBACK_URL` | **REQUIRED**. endpoint where webhook events are sent |
 | `MAX_JOBS` | maximum number of jobs to be processed at the same time, setting to 0 will have no limit |
 | `LOG_LEVEL` | [winston log level](https://www.npmjs.com/package/winston#logging-levels)|

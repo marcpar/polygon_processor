@@ -9,12 +9,13 @@ see [claimable process](../../docs/claimables/README.md)
 | `AZURE_ACCOUNT_KEY` | **REQUIRED**. azure secret key |
 | `TOPIC` | **REQUIRED**. name of the topic |
 | `PRIVATE_KEY`| **REQUIRED**. private key of the wallet that will mint the nft |
-| `NFT_CONTRACT_ADDRESS` | **REQUIRED**. address of the nft smart contract (claimable) |
-| `FT_CONTRACT_ADDRESS` | **REQUIRED**. address of the ft smart contract (gas token) |
+| `MULTI_TOKEN_ADDRESS` | **REQUIRED**. address of the nft smart contract (claimable) |
+| `MULTI_TOKEN_MINTER_ADDRESS` | **REQUIRED**. address of the wallet that mints the nft |
+| `GAS_TOKEN_ADDRESS` | **REQUIRED**. address of the ft smart contract (gas token) |
 | `DEFAULT_CALLBACK_URL` | **REQUIRED**. endpoint where webhook events are sent |
 | `MAX_JOBS` | maximum number of jobs to be processed at the same time, setting to 0 will have no limit |
 | `LOG_LEVEL` | [winston log level](https://www.npmjs.com/package/winston#logging-levels)|
-| `CLAIM_BASE_URL` | **REQUIRED**. base url of the claim frontend |
+| `CLAIMABLE_BASE_URL` | **REQUIRED**. base url of the claim frontend |
 | `RPC_URL` | **REQUIRED**. rpc node to use |
 
 # Job Spec
