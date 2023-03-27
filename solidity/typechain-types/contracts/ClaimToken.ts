@@ -110,35 +110,11 @@ export interface ClaimTokenInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "CALL_DENIED(address)": EventFragment;
-    "CLAIM_ATTEMPT(address,address,address,uint256)": EventFragment;
     "Initialized(uint8)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "CALL_DENIED"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "CLAIM_ATTEMPT"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
 }
-
-export interface CALL_DENIEDEventObject {
-  arg0: string;
-}
-export type CALL_DENIEDEvent = TypedEvent<[string], CALL_DENIEDEventObject>;
-
-export type CALL_DENIEDEventFilter = TypedEventFilter<CALL_DENIEDEvent>;
-
-export interface CLAIM_ATTEMPTEventObject {
-  arg0: string;
-  arg1: string;
-  arg2: string;
-  arg3: BigNumber;
-}
-export type CLAIM_ATTEMPTEvent = TypedEvent<
-  [string, string, string, BigNumber],
-  CLAIM_ATTEMPTEventObject
->;
-
-export type CLAIM_ATTEMPTEventFilter = TypedEventFilter<CLAIM_ATTEMPTEvent>;
 
 export interface InitializedEventObject {
   version: number;
@@ -286,22 +262,6 @@ export interface ClaimToken extends BaseContract {
   };
 
   filters: {
-    "CALL_DENIED(address)"(arg0?: null): CALL_DENIEDEventFilter;
-    CALL_DENIED(arg0?: null): CALL_DENIEDEventFilter;
-
-    "CLAIM_ATTEMPT(address,address,address,uint256)"(
-      arg0?: null,
-      arg1?: null,
-      arg2?: null,
-      arg3?: null
-    ): CLAIM_ATTEMPTEventFilter;
-    CLAIM_ATTEMPT(
-      arg0?: null,
-      arg1?: null,
-      arg2?: null,
-      arg3?: null
-    ): CLAIM_ATTEMPTEventFilter;
-
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
   };

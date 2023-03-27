@@ -171,13 +171,11 @@ export interface GasTokenInterface extends utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
-    "CALL_DENIED(address)": EventFragment;
     "Initialized(uint8)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "CALL_DENIED"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
@@ -193,13 +191,6 @@ export type ApprovalEvent = TypedEvent<
 >;
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
-
-export interface CALL_DENIEDEventObject {
-  arg0: string;
-}
-export type CALL_DENIEDEvent = TypedEvent<[string], CALL_DENIEDEventObject>;
-
-export type CALL_DENIEDEventFilter = TypedEventFilter<CALL_DENIEDEvent>;
 
 export interface InitializedEventObject {
   version: number;
@@ -498,9 +489,6 @@ export interface GasToken extends BaseContract {
       spender?: PromiseOrValue<string> | null,
       value?: null
     ): ApprovalEventFilter;
-
-    "CALL_DENIED(address)"(arg0?: null): CALL_DENIEDEventFilter;
-    CALL_DENIED(arg0?: null): CALL_DENIEDEventFilter;
 
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;

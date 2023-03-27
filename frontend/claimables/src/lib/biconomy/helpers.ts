@@ -1,5 +1,6 @@
 import { keccak256 } from 'ethers';
 import abi from "ethereumjs-abi";
+import { BICONOMY_API_ID, BICONOMY_API_KEY, CLAIM_TOKEN_ADDRESS } from '@/config';
 let helperAttributes = {} as any;
 let supportedNetworks = [42, 4, 5]; //add more
 helperAttributes.ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -124,12 +125,12 @@ async function sendTransaction({ userAddress, req, sig, domainSeparator, signatu
       fetch(`https://api.biconomy.io/api/v2/meta-tx/native`, {
         method: "POST",
         headers: {
-          "x-api-key": 'kujn7aaDN.39afe3a1-d2bc-4745-bd53-6303399d12cf',
+          "x-api-key": BICONOMY_API_KEY,
           'Content-Type': 'application/json;charset=utf-8'
         },
         body: JSON.stringify({
-          "to": '0x70cfAB34E61c0e0e463b000c4355B37Bbe321d39',
-          "apiId": '88012343-0026-4f9b-9805-60ea3b8751f8',
+          "to": CLAIM_TOKEN_ADDRESS,
+          "apiId": BICONOMY_API_ID,
           "params": params,
           "from": userAddress,
           "signatureType": signatureType

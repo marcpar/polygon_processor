@@ -7,50 +7,6 @@ const abi = [
         "inputs": [
             {
                 "indexed": false,
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "CALL_DENIED",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "CLAIM_ATTEMPT",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
                 "internalType": "uint8",
                 "name": "version",
                 "type": "uint8"
@@ -187,8 +143,12 @@ class ClaimToken extends Wrapper {
         super(address, abi, runner);
     }
 
-    public externalClaimNFT(receiver: string, tokenAddress: string, tokenId: string) {
+    public externalClaimNFT(receiver: string, tokenAddress: string, tokenId: number) {
         return this._contract.externalClaimNFT(receiver, tokenAddress, tokenId);
+    }
+
+    public externalClaimNFTFunctionData(receiver: string, tokenAddress: string, tokenId: number): string {
+        return this._contract.interface.encodeFunctionData('externalClaimNFT', [receiver, tokenAddress, tokenId]);
     }
 }
 

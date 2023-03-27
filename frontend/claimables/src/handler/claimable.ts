@@ -1,6 +1,7 @@
+import { CLAIM_TOKEN_ADDRESS, TRUSTED_FORWARDER_ADDRESS } from "@/config";
 import { ResolveArweaveURIToGateway } from "@/lib/arweave";
-import { ClaimDetails } from "@/lib/claimable/claim";
-import { MultiToken } from "@/lib/eth";
+import { buildForwardTxRequest, getBiconomyForwarderConfig, getDataToSignForPersonalSign, sendTransaction } from "@/lib/biconomy/helpers";
+import { ClaimToken, Forwarder, MultiToken } from "@/lib/eth";
 import { getWindowEthereumProvider } from "@/lib/eth/provider";
 import { GetOpenSeaMetadataFromURI, OpenSeaMetadata } from "@/lib/opensea";
 import { BrowserProvider, Wallet } from 'ethers';
@@ -8,6 +9,12 @@ import { BrowserProvider, Wallet } from 'ethers';
 type Claimable = {
     uri: string,
     metadata: ClaimableMetadata
+}
+
+type ClaimDetails = {
+    PrivateKey: string,
+    TokenContractAddress: string,
+    TokenId: number
 }
 
 type ClaimableMetadata = {
@@ -67,6 +74,58 @@ function getClaimableMetadataFromOpenseaMetadata(meta: OpenSeaMetadata): Claimab
     }
 }
 
+
+async function claimNFT(claimable: ClaimDetails): Promise<void> {
+    let browser = new BrowserProvider(getWindowEthereumProvider());
+
+    let receiver = (await browser.getSigner()).address;
+    let wallet = new Wallet(claimable.PrivateKey, browser);
+
+    console.log(CLAIM_TOKEN_ADDRESS);
+    let claimToken = new ClaimToken(CLAIM_TOKEN_ADDRESS, browser);
+
+    let functionSignature = claimToken.externalClaimNFTFunctionData(receiver, claimable.TokenContractAddress, claimable.TokenId);
+
+    let forwarder = new Forwarder(TRUSTED_FORWARDER_ADDRESS, wallet);
+    const batchId = 0;
+    const batchNonce = await forwarder.getNonce(wallet.address, batchId);
+    const to = CLAIM_TOKEN_ADDRESS;
+    const gasEstimate = await browser.estimateGas({
+        to: to,
+        from: wallet.address,
+        data: functionSignature
+    });
+    const gasNum = Number(gasEstimate.toString(10));
+
+    const request = await buildForwardTxRequest({
+        account: wallet.address,
+        to: to,
+        gasLimitNum: gasNum,
+        batchId,
+        batchNonce,
+        data: functionSignature
+    })
+
+    const hash = getDataToSignForPersonalSign(request);
+
+    let sig = await wallet.signMessage(hash);
+
+    await sendTransaction({
+        userAddress: wallet.address,
+        req: request,
+        sig,
+        signatureType: 'PERSONAL_SIGN'
+    });
+}
+
+function parseFromString(str: string): ClaimDetails {
+    return JSON.parse(str);
+}
+
+function parseFromBase64String(str: string): ClaimDetails {
+    return parseFromString(Buffer.from(str, 'base64').toString('utf-8'));
+}
+
 async function checkBalanceOfAddress(address: string, tokenAddress: string, tokenID: number): Promise<number> {
     let multiTokenContract = new MultiToken(tokenAddress, new BrowserProvider(getWindowEthereumProvider()));
     return multiTokenContract.balanceOf(address, tokenID);
@@ -79,11 +138,15 @@ async function checkIfAlreadyClaimed(claimDetails: ClaimDetails): Promise<boolea
 }
 
 export type {
-    Claimable
+    Claimable,
+    ClaimDetails
 }
 
 export {
     getClaimable,
     checkBalanceOfAddress,
-    checkIfAlreadyClaimed
+    checkIfAlreadyClaimed,
+    claimNFT,
+    parseFromBase64String,
+    parseFromString
 }

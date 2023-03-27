@@ -52,20 +52,11 @@ export interface AdminUpgradeableInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "setAdmin", data: BytesLike): Result;
 
   events: {
-    "CALL_DENIED(address)": EventFragment;
     "Initialized(uint8)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "CALL_DENIED"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
 }
-
-export interface CALL_DENIEDEventObject {
-  arg0: string;
-}
-export type CALL_DENIEDEvent = TypedEvent<[string], CALL_DENIEDEventObject>;
-
-export type CALL_DENIEDEventFilter = TypedEventFilter<CALL_DENIEDEvent>;
 
 export interface InitializedEventObject {
   version: number;
@@ -135,9 +126,6 @@ export interface AdminUpgradeable extends BaseContract {
   };
 
   filters: {
-    "CALL_DENIED(address)"(arg0?: null): CALL_DENIEDEventFilter;
-    CALL_DENIED(arg0?: null): CALL_DENIEDEventFilter;
-
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
   };

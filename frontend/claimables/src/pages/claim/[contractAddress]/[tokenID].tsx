@@ -5,12 +5,9 @@ import Podium from '@/assets/PODIUM-VirtualMedal.png';
 import ordinal from 'ordinal';
 import { useEffect, useState, MouseEvent } from 'react';
 import Media from '@/components/media/Media';
-import { BrowserProvider, Provider } from 'ethers';
-import { ClaimDetails, claimNFT, parseFromBase64String } from '@/lib/claimable/claim';
-import { checkBalanceOfAddress, checkIfAlreadyClaimed, Claimable, getClaimable } from '@/handler';
+import { ClaimDetails, claimNFT, parseFromBase64String, checkIfAlreadyClaimed, Claimable, getClaimable } from '@/handler';
 import { GridLoader } from 'react-spinners';
-
-
+import { OPENSEA_BASE_URL } from '@/config';
 
 export default function ClaimNFT() {
     const router = useRouter();
@@ -27,7 +24,7 @@ export default function ClaimNFT() {
         if (claimDetails) {
             claimNFT(claimDetails).then(() => {
                 setIsAlreadyClaimed(true);
-                window.location.href = `https://testnets.opensea.io/assets/mumbai/${claimDetails?.TokenContractAddress}/${claimDetails?.TokenId}`
+                window.location.href = `${OPENSEA_BASE_URL}/${claimDetails?.TokenContractAddress}/${claimDetails?.TokenId}`
             }).catch(e => {
                 throw new Error(e);
             });

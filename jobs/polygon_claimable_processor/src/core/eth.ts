@@ -41,7 +41,7 @@ function ConfigureEth(config: EthConfig) {
 async function CreateClaimable(tokenId: number): Promise<ClaimableResult> {
     let newWallet = Wallet.createRandom();
     await (await _multiToken.externalTransferNFTTo(_config.multiTokenMinterAddress, newWallet.address, tokenId, 1)).wait();
-    await (await _gasToken.externalMintTo(newWallet.address, 2)).wait();
+    await (await _gasToken.externalMintTo(newWallet.address, 1)).wait();
 
     let claimableURL = new URL(`${_config.claimableBaseURL}/${_config.multiTokenAddress}/${tokenId}`);
     claimableURL.hash = Buffer.from(JSON.stringify({

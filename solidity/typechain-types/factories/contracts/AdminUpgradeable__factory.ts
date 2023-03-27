@@ -15,19 +15,6 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "CALL_DENIED",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
         internalType: "uint8",
         name: "version",
         type: "uint8",

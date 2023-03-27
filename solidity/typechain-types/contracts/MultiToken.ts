@@ -184,7 +184,6 @@ export interface MultiTokenInterface extends utils.Interface {
 
   events: {
     "ApprovalForAll(address,address,bool)": EventFragment;
-    "CALL_DENIED(address)": EventFragment;
     "Initialized(uint8)": EventFragment;
     "TransferBatch(address,address,address,uint256[],uint256[])": EventFragment;
     "TransferSingle(address,address,address,uint256,uint256)": EventFragment;
@@ -192,7 +191,6 @@ export interface MultiTokenInterface extends utils.Interface {
   };
 
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "CALL_DENIED"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferSingle"): EventFragment;
@@ -210,13 +208,6 @@ export type ApprovalForAllEvent = TypedEvent<
 >;
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
-
-export interface CALL_DENIEDEventObject {
-  arg0: string;
-}
-export type CALL_DENIEDEvent = TypedEvent<[string], CALL_DENIEDEventObject>;
-
-export type CALL_DENIEDEventFilter = TypedEventFilter<CALL_DENIEDEvent>;
 
 export interface InitializedEventObject {
   version: number;
@@ -560,9 +551,6 @@ export interface MultiToken extends BaseContract {
       operator?: PromiseOrValue<string> | null,
       approved?: null
     ): ApprovalForAllEventFilter;
-
-    "CALL_DENIED(address)"(arg0?: null): CALL_DENIEDEventFilter;
-    CALL_DENIED(arg0?: null): CALL_DENIEDEventFilter;
 
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
