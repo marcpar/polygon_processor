@@ -13,7 +13,7 @@ type EthConfig = {
 }
 
 type ClaimableResult = {
-    ClaimableURL: string
+    ClaimURL: string
 }
 
 type Claimable = {
@@ -51,7 +51,7 @@ async function CreateClaimable(tokenId: number): Promise<ClaimableResult> {
     } as Claimable), 'utf-8').toString('base64url');
 
     return {
-        ClaimableURL: claimableURL.toString()
+        ClaimURL: claimableURL.toString()
     }
 }
 
