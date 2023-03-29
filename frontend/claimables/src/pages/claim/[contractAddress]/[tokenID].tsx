@@ -8,6 +8,7 @@ import Media from '@/components/media/Media';
 import { ClaimDetails, claimNFT, parseFromBase64String, checkIfAlreadyClaimed, Claimable, getClaimable } from '@/handler';
 import { GridLoader } from 'react-spinners';
 import { OPENSEA_BASE_URL } from '@/config';
+import { configureProvider } from '@/lib/eth';
 
 export default function ClaimNFT() {
     const router = useRouter();
@@ -19,6 +20,7 @@ export default function ClaimNFT() {
     let [isAlreadyClaimed, setIsAlreadyClaimed] = useState<boolean>(false);
     let [isMediaLoading, setIsMediaLoading] = useState<boolean>(true);
     let [claimDetails, setClaimDetails] = useState<ClaimDetails | undefined>(undefined);
+    let [isWalletConfigured, setIsWalletConfigured] = useState<boolean>(false);
 
     function claimOnClick() {
         if (claimDetails) {
@@ -46,6 +48,7 @@ export default function ClaimNFT() {
     }
 
     useEffect(() => {
+        if (!isWalletConfigured) return;
         if (claimable === undefined && contractAddress && tokenID) {
             getClaimable(contractAddress, parseInt(tokenID, 10)).then(async (claimable) => {
                 setClaimable(claimable);
@@ -54,6 +57,7 @@ export default function ClaimNFT() {
     });
 
     useEffect(() => {
+        if (!isWalletConfigured) return;
         if (!isAlreadyClaimed && claimDetails) {
             checkIfAlreadyClaimed(claimDetails).then(async (isClaimed) => {
                 setIsAlreadyClaimed(isClaimed);
@@ -63,8 +67,17 @@ export default function ClaimNFT() {
     });
 
     useEffect(() => {
+        if (!isWalletConfigured) return;
         if (!claimDetails) {
             setClaimDetails(parseFromBase64String(window.location.hash));
+        }
+    });
+
+    useEffect(() => {
+        if (!isWalletConfigured) {
+            configureProvider().then(() => {
+                setIsWalletConfigured(true);
+            })
         }
     });
 

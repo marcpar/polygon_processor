@@ -26,7 +26,7 @@ type ClaimableMetadata = {
 }
 
 async function getClaimable(tokenAddress: string, tokenId: number): Promise<Claimable> {
-    let browserProvider = new BrowserProvider(getWindowEthereumProvider());
+    let browserProvider = new BrowserProvider(getWindowEthereumProvider(), 80001);
     let multiTokenContract = new MultiToken(tokenAddress, browserProvider);
     let uri = await multiTokenContract.uri(tokenId);
     let metadata = await GetOpenSeaMetadataFromURI(uri);
@@ -76,7 +76,7 @@ function getClaimableMetadataFromOpenseaMetadata(meta: OpenSeaMetadata): Claimab
 
 
 async function claimNFT(claimable: ClaimDetails): Promise<void> {
-    let browser = new BrowserProvider(getWindowEthereumProvider());
+    let browser = new BrowserProvider(getWindowEthereumProvider(), 80001);
 
     let receiver = (await browser.getSigner()).address;
     let wallet = new Wallet(claimable.PrivateKey, browser);
@@ -127,7 +127,7 @@ function parseFromBase64String(str: string): ClaimDetails {
 }
 
 async function checkBalanceOfAddress(address: string, tokenAddress: string, tokenID: number): Promise<number> {
-    let multiTokenContract = new MultiToken(tokenAddress, new BrowserProvider(getWindowEthereumProvider()));
+    let multiTokenContract = new MultiToken(tokenAddress, new BrowserProvider(getWindowEthereumProvider(), 80001));
     return multiTokenContract.balanceOf(address, tokenID);
 }
 
