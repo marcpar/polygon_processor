@@ -16,6 +16,7 @@ type OpenSeaAttributes = {
 
 async function GetOpenSeaMetadataFromURI(uri: string): Promise<OpenSeaMetadata> {
     let _uri = ResolveArweaveURIToGateway(uri);
+    console.log(_uri);
     let res = await fetch(_uri);
     return res.json();
 }

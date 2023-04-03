@@ -80,7 +80,7 @@ export default function ClaimNFT() {
             })
         }
     });
-
+    console.log(claimable);
     if (claimable === null || claimable === undefined) {
         return (
             <div className={style.loader_container}>

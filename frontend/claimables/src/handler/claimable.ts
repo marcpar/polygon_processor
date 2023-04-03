@@ -29,6 +29,7 @@ async function getClaimable(tokenAddress: string, tokenId: number): Promise<Clai
     let browserProvider = new BrowserProvider(getWindowEthereumProvider(), 80001);
     let multiTokenContract = new MultiToken(tokenAddress, browserProvider);
     let uri = await multiTokenContract.uri(tokenId);
+    console.log(uri);
     let metadata = await GetOpenSeaMetadataFromURI(uri);
 
     return {
