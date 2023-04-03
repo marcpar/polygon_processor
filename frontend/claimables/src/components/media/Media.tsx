@@ -22,7 +22,8 @@ async function getMediaSafari(src: string): Promise<string> {
 }
 
 export default function Media(props: MediaProps) {
-    let browser = detect();
+    
+    
     let ext = props.src.split(".").pop();
     let [isLoading, setIsLoading] = useState<boolean>(true);
     let [mediaSrc, setMediaSrc] = useState<string>('');
@@ -35,10 +36,13 @@ export default function Media(props: MediaProps) {
     }
 
     useEffect(() => {
+        let browser = detect();
+    
         if (mediaSrc !== '') {
             return;
         }
-        if (browser && (browser.name === 'safari' || browser.name === 'crios' || browser.name === 'ios' || browser.name === 'ios-webview')) {
+    
+        if (!browser || browser && (browser.name === 'safari' || browser.name === 'crios' || browser.name === 'ios' || browser.name === 'ios-webview')) {
             getMediaSafari(props.src).then((src) => {
                 setIsLoading(false);
                 setMediaSrc(src);
@@ -46,7 +50,7 @@ export default function Media(props: MediaProps) {
         } else {
             setMediaSrc(props.src);
         }
-    }, [mediaSrc, browser, props.src]);
+    }, [mediaSrc, props.src]);
     
     
     switch (ext) {
