@@ -7,6 +7,11 @@ function getWindowEthereumProvider(): any {
     return ethereum;
 }
 
+async function getConfiguredProvider(): Promise<any> {
+    await configureProvider();
+    return getWindowEthereumProvider();
+}
+
 async function addNetwork() {
 
 }
@@ -48,5 +53,6 @@ async function changeNetworkMumbai() {
 
 export {
     getWindowEthereumProvider,
+    getConfiguredProvider,
     configureProvider
 }

@@ -48,13 +48,31 @@ export default function ClaimNFT() {
     }
 
     useEffect(() => {
+        if (!isWalletConfigured) {
+            configureProvider().then(() => {
+                console.log('configured');
+                setIsWalletConfigured(true);
+            })
+        }
+    }, [isWalletConfigured]);
+
+    useEffect(() => {
+        if (!isWalletConfigured) return;
+        if (!claimDetails) {
+            setClaimDetails(parseFromBase64String(window.location.hash));
+        }
+    }, [isWalletConfigured, claimDetails]);
+
+    useEffect(() => {
         if (!isWalletConfigured) return;
         if (claimable === undefined && contractAddress && tokenID) {
             getClaimable(contractAddress, parseInt(tokenID, 10)).then(async (claimable) => {
                 setClaimable(claimable);
+            }).catch(e => {
+                window.location.reload();
             });
         }
-    });
+    }, [isWalletConfigured, claimable, contractAddress, tokenID]);
 
     useEffect(() => {
         if (!isWalletConfigured) return;
@@ -62,25 +80,12 @@ export default function ClaimNFT() {
             checkIfAlreadyClaimed(claimDetails).then(async (isClaimed) => {
                 setIsAlreadyClaimed(isClaimed);
                 setIsClaimable(!isClaimed);
-            })
+            }).catch(e => {
+                window.location.reload();
+            });
         }
-    });
+    }, [isWalletConfigured, isAlreadyClaimed, claimDetails]);
 
-    useEffect(() => {
-        if (!isWalletConfigured) return;
-        if (!claimDetails) {
-            setClaimDetails(parseFromBase64String(window.location.hash));
-        }
-    });
-
-    useEffect(() => {
-        if (!isWalletConfigured) {
-            configureProvider().then(() => {
-                setIsWalletConfigured(true);
-            })
-        }
-    });
-    console.log(claimable);
     if (claimable === null || claimable === undefined) {
         return (
             <div className={style.loader_container}>

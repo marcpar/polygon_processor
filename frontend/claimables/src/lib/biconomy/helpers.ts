@@ -121,35 +121,24 @@ async function sendTransaction({ userAddress, req, sig, domainSeparator, signatu
     } else {
       params = [req, sig]
     }
-    try {
-      fetch(`https://api.biconomy.io/api/v2/meta-tx/native`, {
-        method: "POST",
-        headers: {
-          "x-api-key": BICONOMY_API_KEY,
-          'Content-Type': 'application/json;charset=utf-8'
-        },
-        body: JSON.stringify({
-          "to": CLAIM_TOKEN_ADDRESS,
-          "apiId": BICONOMY_API_ID,
-          "params": params,
-          "from": userAddress,
-          "signatureType": signatureType
-        })
+
+    let result = await fetch(`https://api.biconomy.io/api/v2/meta-tx/native`, {
+      method: "POST",
+      headers: {
+        "x-api-key": BICONOMY_API_KEY,
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify({
+        "to": CLAIM_TOKEN_ADDRESS,
+        "apiId": BICONOMY_API_ID,
+        "params": params,
+        "from": userAddress,
+        "signatureType": signatureType
       })
-        .then(response => response.json())
-        .then(function (result) {
-          console.log(result);
-          console.log('transaction hash ' + result.txHash);
-        })
-        // once you receive transaction hash you can wait for mined transaction receipt here 
-        // using Promise in web3 : web3.eth.getTransactionReceipt  
-        // or using ethersProvider event emitters
-        .catch(function (error) {
-          console.log(error)
-        });
-    } catch (error) {
-      console.log(error);
-    }
+    });
+    let body = await result.json();
+    console.log(body)
+
   }
 };
 
