@@ -24,6 +24,7 @@ export default function ClaimNFT() {
 
     function claimOnClick() {
         if (claimDetails) {
+            setIsClaimable(false);
             claimNFT(claimDetails).then(() => {
                 setIsAlreadyClaimed(true);
                 window.location.href = `${OPENSEA_BASE_URL}/${claimDetails?.TokenContractAddress}/${claimDetails?.TokenId}`
