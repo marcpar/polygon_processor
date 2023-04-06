@@ -38,6 +38,25 @@ contract GasToken is Initializable, AdminUpgradeable, ERC20Upgradeable {
     }
 
     /**
+     * Batch mints tokens to target addresses
+     *
+     * @param receivers receivers of the token
+     * @param amounts amounts of token to mint
+     */
+    function externalBatchMintTo(
+        address[] calldata receivers,
+        uint256[] calldata amounts
+    ) external onlyAdmins {
+        require(
+            receivers.length == amounts.length,
+            "receivers and amounts should be equal"
+        );
+        for (uint256 counter = 0; counter < receivers.length; counter++) {
+            _mint(receivers[counter], amounts[counter]);
+        }
+    }
+
+    /**
      * Burn token from the target address
      * @param owner tokens to burn from
      * @param amount number of tokens to burn
