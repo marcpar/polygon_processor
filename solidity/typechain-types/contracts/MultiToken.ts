@@ -31,6 +31,8 @@ export interface MultiTokenInterface extends utils.Interface {
   functions: {
     "balanceOf(address,uint256)": FunctionFragment;
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
+    "externalBatchMintNFTs(string[])": FunctionFragment;
+    "externalBatchTransferNFTTo(address,address[],uint256[],uint256[])": FunctionFragment;
     "externalMintNFT(string)": FunctionFragment;
     "externalMintNFTTo(string,address)": FunctionFragment;
     "externalTransferNFTTo(address,address,uint256,uint256)": FunctionFragment;
@@ -49,6 +51,8 @@ export interface MultiTokenInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "balanceOf"
       | "balanceOfBatch"
+      | "externalBatchMintNFTs"
+      | "externalBatchTransferNFTTo"
       | "externalMintNFT"
       | "externalMintNFTTo"
       | "externalTransferNFTTo"
@@ -70,6 +74,19 @@ export interface MultiTokenInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "balanceOfBatch",
     values: [PromiseOrValue<string>[], PromiseOrValue<BigNumberish>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "externalBatchMintNFTs",
+    values: [PromiseOrValue<string>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "externalBatchTransferNFTTo",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BigNumberish>[]
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "externalMintNFT",
@@ -140,6 +157,14 @@ export interface MultiTokenInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "balanceOfBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "externalBatchMintNFTs",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "externalBatchTransferNFTTo",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -291,6 +316,19 @@ export interface MultiToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
+    externalBatchMintNFTs(
+      tokenURIs: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    externalBatchTransferNFTTo(
+      from: PromiseOrValue<string>,
+      receivers: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      amounts: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     externalMintNFT(
       tokenURI: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -378,6 +416,19 @@ export interface MultiToken extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
+  externalBatchMintNFTs(
+    tokenURIs: PromiseOrValue<string>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  externalBatchTransferNFTTo(
+    from: PromiseOrValue<string>,
+    receivers: PromiseOrValue<string>[],
+    tokenIds: PromiseOrValue<BigNumberish>[],
+    amounts: PromiseOrValue<BigNumberish>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   externalMintNFT(
     tokenURI: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -464,6 +515,19 @@ export interface MultiToken extends BaseContract {
       ids: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
+
+    externalBatchMintNFTs(
+      tokenURIs: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    externalBatchTransferNFTTo(
+      from: PromiseOrValue<string>,
+      receivers: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      amounts: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     externalMintNFT(
       tokenURI: PromiseOrValue<string>,
@@ -605,6 +669,19 @@ export interface MultiToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    externalBatchMintNFTs(
+      tokenURIs: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    externalBatchTransferNFTTo(
+      from: PromiseOrValue<string>,
+      receivers: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      amounts: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     externalMintNFT(
       tokenURI: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -691,6 +768,19 @@ export interface MultiToken extends BaseContract {
       accounts: PromiseOrValue<string>[],
       ids: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    externalBatchMintNFTs(
+      tokenURIs: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    externalBatchTransferNFTTo(
+      from: PromiseOrValue<string>,
+      receivers: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      amounts: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     externalMintNFT(

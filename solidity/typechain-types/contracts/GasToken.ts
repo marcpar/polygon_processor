@@ -34,6 +34,7 @@ export interface GasTokenInterface extends utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
+    "externalBatchMintTo(address[],uint256[])": FunctionFragment;
     "externalBurnFrom(address,uint256)": FunctionFragment;
     "externalMintTo(address,uint256)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
@@ -54,6 +55,7 @@ export interface GasTokenInterface extends utils.Interface {
       | "balanceOf"
       | "decimals"
       | "decreaseAllowance"
+      | "externalBatchMintTo"
       | "externalBurnFrom"
       | "externalMintTo"
       | "increaseAllowance"
@@ -83,6 +85,10 @@ export interface GasTokenInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "decreaseAllowance",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "externalBatchMintTo",
+    values: [PromiseOrValue<string>[], PromiseOrValue<BigNumberish>[]]
   ): string;
   encodeFunctionData(
     functionFragment: "externalBurnFrom",
@@ -137,6 +143,10 @@ export interface GasTokenInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "externalBatchMintTo",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -263,6 +273,12 @@ export interface GasToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    externalBatchMintTo(
+      receivers: PromiseOrValue<string>[],
+      amounts: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     externalBurnFrom(
       owner: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -340,6 +356,12 @@ export interface GasToken extends BaseContract {
   decreaseAllowance(
     spender: PromiseOrValue<string>,
     subtractedValue: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  externalBatchMintTo(
+    receivers: PromiseOrValue<string>[],
+    amounts: PromiseOrValue<BigNumberish>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -422,6 +444,12 @@ export interface GasToken extends BaseContract {
       subtractedValue: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    externalBatchMintTo(
+      receivers: PromiseOrValue<string>[],
+      amounts: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     externalBurnFrom(
       owner: PromiseOrValue<string>,
@@ -531,6 +559,12 @@ export interface GasToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    externalBatchMintTo(
+      receivers: PromiseOrValue<string>[],
+      amounts: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     externalBurnFrom(
       owner: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
@@ -609,6 +643,12 @@ export interface GasToken extends BaseContract {
     decreaseAllowance(
       spender: PromiseOrValue<string>,
       subtractedValue: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    externalBatchMintTo(
+      receivers: PromiseOrValue<string>[],
+      amounts: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

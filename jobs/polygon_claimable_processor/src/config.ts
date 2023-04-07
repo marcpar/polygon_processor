@@ -7,9 +7,9 @@ type Config = {
     AzureAccountKey: string,
     Topic: string,
     PrivateKey: string,
+    ClaimTokenAddress: string,
     MultiTokenAddress: string,
     MultiTokenMinterAddress: string,
-    GasTokenAddress: string,
     DefaultCallbackURL: string,
     MaxJobs: number,
     RpcUrl: string,
@@ -36,16 +36,16 @@ function LoadConfig() {
         Logger().error("AZURE_ACCOUNT_KEY is a required environment variable");
         process.exit(1);
     }
+    if (!process.env.CLAIM_TOKEN_ADDRESS) {
+        Logger().error("CLAIM_TOKEN_ADDRESS is a required environment variable");
+        process.exit(1);
+    }
     if (!process.env.MULTI_TOKEN_ADDRESS) {
         Logger().error("MULTI_TOKEN_ADDRESS is a required environment variable");
         process.exit(1);
     }
     if (!process.env.MULTI_TOKEN_MINTER_ADDRESS) {
         Logger().error("MULTI_TOKEN_MINTER_ADDRESS is a required environment variable");
-        process.exit(1);
-    }
-    if (!process.env.GAS_TOKEN_ADDRESS) {
-        Logger().error("GAS_TOKEN_ADDRESS is a required environment variable");
         process.exit(1);
     }
     if (!process.env.PRIVATE_KEY) {
@@ -67,9 +67,9 @@ function LoadConfig() {
             AzureAccountKey: process.env.AZURE_ACCOUNT_KEY,
             Topic: process.env.TOPIC,
             PrivateKey: process.env.PRIVATE_KEY,
+            ClaimTokenAddress: process.env.CLAIM_TOKEN_ADDRESS,
             MultiTokenAddress: process.env.MULTI_TOKEN_ADDRESS,
             MultiTokenMinterAddress: process.env.MULTI_TOKEN_MINTER_ADDRESS,
-            GasTokenAddress: process.env.GAS_TOKEN_ADDRESS,
             DefaultCallbackURL: process.env.DEFAULT_CALLBACK_URL,
             MaxJobs: process.env.MAX_JOBS ? parseInt(process.env.MAX_JOBS) : 0,
             RpcUrl: process.env.RPC_URL,

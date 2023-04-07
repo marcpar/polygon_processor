@@ -1,7 +1,7 @@
 import { Payload, ParsePayloadFromJSONString } from '../queue/common';
 import { Sleep, Logger } from 'lib/dist/util';
 import { Emit } from './event';
-import { Mint } from './eth';
+import { Mint, MintBatch } from './eth';
 import { Queue } from 'lib/dist/queue';
 import { withRetry } from 'lib/dist/util/retry';
 
@@ -59,7 +59,7 @@ async function loop() {
         await processJob(payload);
     })().then(async () => {
     }).catch(async (e) => {
-        
+
         let err = e as Error;
         for (const _payload of payload) {
             let err_message = `Requeing job ${_payload.JobId}, failed due to error: ${err.message}\n${err.stack ?? ''}`;
@@ -84,23 +84,52 @@ async function loop() {
 }
 
 async function processJob(payload: Payload[]) {
-    Emit({
-        Event: 'started',
-        JobId: payload[0].JobId,
-        Message: `Processing job: ${payload[0].JobId}`
-    });
-    Logger().info(`minting: ${payload[0].ArweaveTxnId}`);
-    
+    if (payload.length === 1) {
+        Emit({
+            Event: 'started',
+            JobId: payload[0].JobId,
+            Message: `Processing job: ${payload[0].JobId}`
+        });
+        Logger().info(`minting: ${payload[0].ArweaveTxnId}`);
+
+        let result = await withRetry(async () => {
+            return await Mint(`ar://${payload[0].ArweaveTxnId}/opensea.json`);
+        }, 5);
+
+        Emit({
+            Event: 'success',
+            JobId: payload[0].JobId,
+            Message: `Successfullly processed: ${payload[0].JobId}`,
+            Details: result
+        });
+        return;
+    }
+
+    let uris: string[] = [];
+    for (const _payload of payload) {
+        Emit({
+            Event: 'started',
+            JobId: _payload.JobId,
+            Message: `Processing job: ${_payload.JobId}`
+        });
+        Logger().info(`minting ${_payload.JobId}: ${_payload.ArweaveTxnId}`);
+        uris.push(`ar://${_payload.ArweaveTxnId}/opensea.json`);
+    };
+
     let result = await withRetry(async () => {
-        return await Mint(`ar://${payload[0].ArweaveTxnId}/opensea.json`);
+        return await MintBatch(uris);
     }, 5);
 
-    Emit({
-        Event: 'success',
-        JobId: payload[0].JobId,
-        Message: `Successfullly processed: ${payload[0].JobId}`,
-        Details: result
-    });
+
+    for (const [i, _payload] of payload.entries()) {
+        Emit({
+            Event: 'success',
+            JobId: _payload.JobId,
+            Message: `Successfully processed ${_payload.JobId}`,
+            Details: result[i]
+        });
+        Logger().info(`Successfully processed ${_payload.JobId}`);
+    }
 }
 
 export {

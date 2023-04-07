@@ -17,6 +17,7 @@ type MintResult = {
 }
 
 const TRANSFER_SINGLE_EVENT = 'TransferSingle'
+const TRANSFER_BATCH_EVENT = 'TransferBatch';
 
 let _config: EthConfig;
 let _provider: JsonRpcProvider;
@@ -46,7 +47,28 @@ async function Mint(uri: string): Promise<MintResult> {
     };
 }
 
+async function MintBatch(uris: string[]): Promise<MintResult[]> {
+    let res = await _token.externalBatchMintNFTs(uris);
+    let receipt = await res.wait();
+    let mintResults: MintResult[] = [];
+    let ids: string[] = [];
+    receipt.events?.forEach(event => {
+        if (event.event === TRANSFER_BATCH_EVENT && event.args && event.args[3]) {
+            ids.push(...event.args[3]);
+        }
+    });
+    ids.forEach(id => {
+        mintResults.push({
+            ContractAddress: _config.multiTokenAddress,
+            OpenSeaUrl: `${_config.openSeaBaseUrl}/${_config.multiTokenAddress}/${id}`,
+            TokenId: `${id}`
+        })
+    })
+    return mintResults;
+}
+
 export {
     ConfigureEth,
-    Mint
+    Mint,
+    MintBatch
 }

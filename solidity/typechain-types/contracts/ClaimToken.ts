@@ -29,8 +29,10 @@ import type {
 
 export interface ClaimTokenInterface extends utils.Interface {
   functions: {
+    "externalBatchTransferAssets(address,address,address[],uint256[])": FunctionFragment;
     "externalClaimNFT(address,address,uint256)": FunctionFragment;
     "externalSetGasToken(address)": FunctionFragment;
+    "externalTransferAssets(address,address,address,uint256)": FunctionFragment;
     "initialize(address,address,address)": FunctionFragment;
     "isTrustedForwarder(address)": FunctionFragment;
     "revokeAdmin(address)": FunctionFragment;
@@ -40,8 +42,10 @@ export interface ClaimTokenInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "externalBatchTransferAssets"
       | "externalClaimNFT"
       | "externalSetGasToken"
+      | "externalTransferAssets"
       | "initialize"
       | "isTrustedForwarder"
       | "revokeAdmin"
@@ -49,6 +53,15 @@ export interface ClaimTokenInterface extends utils.Interface {
       | "trustedForwarder"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "externalBatchTransferAssets",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>[]
+    ]
+  ): string;
   encodeFunctionData(
     functionFragment: "externalClaimNFT",
     values: [
@@ -60,6 +73,15 @@ export interface ClaimTokenInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "externalSetGasToken",
     values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "externalTransferAssets",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
@@ -87,11 +109,19 @@ export interface ClaimTokenInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(
+    functionFragment: "externalBatchTransferAssets",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "externalClaimNFT",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "externalSetGasToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "externalTransferAssets",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
@@ -150,6 +180,14 @@ export interface ClaimToken extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    externalBatchTransferAssets(
+      from: PromiseOrValue<string>,
+      nft: PromiseOrValue<string>,
+      receivers: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     externalClaimNFT(
       receiver: PromiseOrValue<string>,
       nft: PromiseOrValue<string>,
@@ -159,6 +197,14 @@ export interface ClaimToken extends BaseContract {
 
     externalSetGasToken(
       gasToken: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    externalTransferAssets(
+      from: PromiseOrValue<string>,
+      nft: PromiseOrValue<string>,
+      receiver: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -187,6 +233,14 @@ export interface ClaimToken extends BaseContract {
     trustedForwarder(overrides?: CallOverrides): Promise<[string]>;
   };
 
+  externalBatchTransferAssets(
+    from: PromiseOrValue<string>,
+    nft: PromiseOrValue<string>,
+    receivers: PromiseOrValue<string>[],
+    tokenIds: PromiseOrValue<BigNumberish>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   externalClaimNFT(
     receiver: PromiseOrValue<string>,
     nft: PromiseOrValue<string>,
@@ -196,6 +250,14 @@ export interface ClaimToken extends BaseContract {
 
   externalSetGasToken(
     gasToken: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  externalTransferAssets(
+    from: PromiseOrValue<string>,
+    nft: PromiseOrValue<string>,
+    receiver: PromiseOrValue<string>,
+    tokenId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -224,6 +286,14 @@ export interface ClaimToken extends BaseContract {
   trustedForwarder(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
+    externalBatchTransferAssets(
+      from: PromiseOrValue<string>,
+      nft: PromiseOrValue<string>,
+      receivers: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     externalClaimNFT(
       receiver: PromiseOrValue<string>,
       nft: PromiseOrValue<string>,
@@ -233,6 +303,14 @@ export interface ClaimToken extends BaseContract {
 
     externalSetGasToken(
       gasToken: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    externalTransferAssets(
+      from: PromiseOrValue<string>,
+      nft: PromiseOrValue<string>,
+      receiver: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -267,6 +345,14 @@ export interface ClaimToken extends BaseContract {
   };
 
   estimateGas: {
+    externalBatchTransferAssets(
+      from: PromiseOrValue<string>,
+      nft: PromiseOrValue<string>,
+      receivers: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     externalClaimNFT(
       receiver: PromiseOrValue<string>,
       nft: PromiseOrValue<string>,
@@ -276,6 +362,14 @@ export interface ClaimToken extends BaseContract {
 
     externalSetGasToken(
       gasToken: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    externalTransferAssets(
+      from: PromiseOrValue<string>,
+      nft: PromiseOrValue<string>,
+      receiver: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -305,6 +399,14 @@ export interface ClaimToken extends BaseContract {
   };
 
   populateTransaction: {
+    externalBatchTransferAssets(
+      from: PromiseOrValue<string>,
+      nft: PromiseOrValue<string>,
+      receivers: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     externalClaimNFT(
       receiver: PromiseOrValue<string>,
       nft: PromiseOrValue<string>,
@@ -314,6 +416,14 @@ export interface ClaimToken extends BaseContract {
 
     externalSetGasToken(
       gasToken: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    externalTransferAssets(
+      from: PromiseOrValue<string>,
+      nft: PromiseOrValue<string>,
+      receiver: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

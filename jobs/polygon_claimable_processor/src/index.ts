@@ -14,7 +14,7 @@ import { CreateAzureStorageQueue } from 'lib/dist/queue';
     SetQueue(CreateAzureStorageQueue(config.AzureAccountName, config.AzureAccountKey, config.Topic));
     ConfigureEth({
         networkID: '80001',
-        gasTokenAddress: config.GasTokenAddress,
+        claimTokenAddress: config.ClaimTokenAddress,
         multiTokenAddress: config.MultiTokenAddress,
         multiTokenMinterAddress: config.MultiTokenMinterAddress,
         privateKey: config.PrivateKey,
