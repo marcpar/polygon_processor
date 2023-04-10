@@ -32,6 +32,17 @@ task('claimToken:create-claimable', 'creates a claimable nft private key')
         console.log(`address: ${wallet.address}`);
     });
 
+task('claimToken:set-admin', 'sets a new admin')
+    .addParam('address', 'address of the new admin', undefined, string, false)
+    .setAction( async (args, hre) => {
+        let claimTokenAddress = process.env.CLAIM_TOKEN_ADDRESS;
+        if (!claimTokenAddress || claimTokenAddress.length === 0) {
+            throw new Error(`invalid CLAIM_TOKEN_ADDRESS: ${claimTokenAddress}`);
+        }
+        let claimToken = (await hre.ethers.getContractFactory('ClaimToken')).attach(claimTokenAddress);
+        await claimToken.setAdmin(args.address);
+    });
+
 task('claimToken:claim', 'claims the claimable')
     .addParam('key', 'private key of the temporary wallet', undefined, string, false)
     .addParam('to', 'address of the receiver', undefined, string, false)

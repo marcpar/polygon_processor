@@ -2,7 +2,7 @@ import { Payload, ParsePayloadFromJSONString } from '../queue/common';
 import axios, { AxiosError } from 'axios';
 import { Sleep, Logger } from 'lib/dist/util';
 import { Emit } from './event';
-import { CreateClaimable } from './eth';
+import { BatchCreateClaimable, CreateClaimable } from './eth';
 import { Queue } from 'lib/dist/queue';
 import { withRetry } from 'lib/dist/util/retry';
 
@@ -85,23 +85,52 @@ async function loop() {
 }
 
 async function processJob(payload: Payload[]) {
-    Emit({
-        Event: 'started',
-        JobId: payload[0].JobId,
-        Message: `Processing job: ${payload[0].JobId}`
-    });
-    Logger().info(`creating claimable for : ${payload[0].TokenId}`);
-    let tokenId = parseInt(payload[0].TokenId);
+    if (payload.length === 1) {
+        Emit({
+            Event: 'started',
+            JobId: payload[0].JobId,
+            Message: `Processing job: ${payload[0].JobId}`
+        });
+        Logger().info(`creating claimable for : ${payload[0].TokenId}`);
+        let tokenId = parseInt(payload[0].TokenId);
+        let result = await withRetry(async () => {
+            return await CreateClaimable(tokenId);
+        }, 5);
+    
+        Emit({
+            Event: 'success',
+            JobId: payload[0].JobId,
+            Message: `Successfullly processed: ${payload[0].JobId}`,
+            Details: result
+        });
+        Logger().info(`Successfully processed: ${payload[0].JobId}`)
+        return;
+    }
+
+    let tokenIds: number[] = [];
+    for (const _payload of payload) {
+        Emit({
+            Event: 'started',
+            JobId: _payload.JobId,
+            Message: `Processing job: ${_payload.JobId}`
+        });
+        Logger().info(`creating claimable for : ${_payload.TokenId}`);
+        tokenIds.push(parseInt(_payload.TokenId, 10));
+    }
+    
     let result = await withRetry(async () => {
-        return await CreateClaimable(tokenId);
+        return await BatchCreateClaimable(tokenIds);
     }, 5);
 
-    Emit({
-        Event: 'success',
-        JobId: payload[0].JobId,
-        Message: `Successfullly processed: ${payload[0].JobId}`,
-        Details: result
-    });
+    for (const index in payload) {
+        Emit({
+            Event: 'success',
+            JobId: payload[index].JobId,
+            Message: `Successfullly processed: ${payload[index].JobId}`,
+            Details: result[index]
+        });
+        Logger().info(`Successfully processed: ${payload[index].JobId}`)
+    }
 }
 
 export {

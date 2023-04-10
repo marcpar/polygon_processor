@@ -22,8 +22,6 @@ type Claimable = {
     TokenId: number
 }
 
-const TRANSFER_SINGLE_EVENT = 'TransferSingle'
-
 let _config: EthConfig;
 let _provider: JsonRpcProvider;
 let _wallet: Wallet;
@@ -40,22 +38,44 @@ function ConfigureEth(config: EthConfig) {
 
 async function CreateClaimable(tokenId: number): Promise<ClaimableResult> {
     let newWallet = Wallet.createRandom();
-    //await (await _multiToken.externalTransferNFTTo(_config.multiTokenMinterAddress, newWallet.address, tokenId, 1)).wait();
-    //await (await _gasToken.externalMintTo(newWallet.address, 1)).wait();
     await _claimToken.externalTransferAssets(_config.multiTokenMinterAddress, _config.multiTokenAddress, newWallet.address, tokenId);
     let claimableURL = new URL(`${_config.claimableBaseURL}/${_config.multiTokenAddress}/${tokenId}`);
     claimableURL.hash = Buffer.from(JSON.stringify({
         PrivateKey: newWallet.privateKey,
         TokenContractAddress: _config.multiTokenAddress,
         TokenId: tokenId
-    } as Claimable), 'utf-8').toString('base64url');
+    } satisfies Claimable), 'utf-8').toString('base64url');
 
     return {
         ClaimURL: claimableURL.toString()
     }
 }
 
+async function BatchCreateClaimable(tokenIds: number[]): Promise<ClaimableResult[]> {
+    let claimableResult: ClaimableResult[] = [];
+    let newAddresses: string[] = [];
+    for (const tokenId of tokenIds) {
+        let newWallet = Wallet.createRandom();
+        newAddresses.push(newWallet.address);
+
+        let claimableURL = new URL(`${_config.claimableBaseURL}/${_config.multiTokenAddress}/${tokenId}`);
+        claimableURL.hash = Buffer.from(JSON.stringify({
+            PrivateKey: newWallet.privateKey,
+            TokenContractAddress: _config.multiTokenAddress,
+            TokenId: tokenId
+        } satisfies Claimable), 'utf-8').toString('base64url');
+
+        claimableResult.push({
+            ClaimURL: claimableURL.toString()
+        });
+    }
+    await _claimToken.externalBatchTransferAssets(_config.multiTokenMinterAddress, _config.multiTokenAddress, newAddresses, tokenIds);
+
+    return claimableResult;
+}
+
 export {
     ConfigureEth,
-    CreateClaimable
+    CreateClaimable,
+    BatchCreateClaimable
 }
