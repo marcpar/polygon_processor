@@ -16,8 +16,8 @@ import { CreateAzureStorageQueue } from 'lib/dist/queue';
         networkID: '80001',
         multiTokenAddress: config.MultiTokenAddress,
         privateKey: config.PrivateKey,
-        rpcURL: 'https://polygon-testnet-rpc.allthatnode.com:8545',
-        openSeaBaseUrl: 'https://testnets.opensea.io/assets/mumbai'
+        rpcURL: config.RpcUrl,
+        openSeaBaseUrl: config.OpenSeaBaseUrl
     });
     SetMaxJobs(config.MaxJobs ?? 5);
 

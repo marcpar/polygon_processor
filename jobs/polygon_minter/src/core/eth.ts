@@ -29,6 +29,7 @@ function ConfigureEth(config: EthConfig) {
     _provider = new JsonRpcProvider(_config.rpcURL, 80001);
     _wallet = new Wallet(_config.privateKey, _provider);
     _token = MultiToken__factory.connect(_config.multiTokenAddress, _wallet);
+
 }
 
 async function Mint(uri: string): Promise<MintResult> {

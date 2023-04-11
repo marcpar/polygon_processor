@@ -9,6 +9,7 @@ import { ClaimDetails, claimNFT, parseFromBase64String, checkIfAlreadyClaimed, C
 import { GridLoader } from 'react-spinners';
 import { OPENSEA_BASE_URL } from '@/config';
 import { configureProvider } from '@/lib/eth';
+import LoaderModal from '@/components/loader/LoaderModal';
 
 export default function ClaimNFT() {
     const router = useRouter();
@@ -21,15 +22,19 @@ export default function ClaimNFT() {
     let [isMediaLoading, setIsMediaLoading] = useState<boolean>(true);
     let [claimDetails, setClaimDetails] = useState<ClaimDetails | undefined>(undefined);
     let [isWalletConfigured, setIsWalletConfigured] = useState<boolean>(false);
+    let [isLoaderOpen, setIsLoaderOpen] = useState<boolean>(false);
 
     function claimOnClick() {
         if (claimDetails) {
             setIsClaimable(false);
+            setIsLoaderOpen(true);
             claimNFT(claimDetails).then(() => {
                 setIsAlreadyClaimed(true);
                 window.location.href = `${OPENSEA_BASE_URL}/${claimDetails?.TokenContractAddress}/${claimDetails?.TokenId}`
             }).catch(e => {
                 throw new Error(e);
+            }).finally(() => {
+                setIsLoaderOpen(false);
             });
         }
     }
@@ -141,6 +146,7 @@ export default function ClaimNFT() {
                     </div>
                 </div>
             </div>
+            <LoaderModal isOpen = { isLoaderOpen }/>
         </div>
     );
 }

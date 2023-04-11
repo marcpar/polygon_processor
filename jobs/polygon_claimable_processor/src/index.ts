@@ -18,7 +18,7 @@ import { CreateAzureStorageQueue } from 'lib/dist/queue';
         multiTokenAddress: config.MultiTokenAddress,
         multiTokenMinterAddress: config.MultiTokenMinterAddress,
         privateKey: config.PrivateKey,
-        rpcURL: 'https://polygon-testnet-rpc.allthatnode.com:8545',
+        rpcURL: config.RpcUrl,
         claimableBaseURL: config.ClaimableBaseURL
     });
     SetMaxJobs(config.MaxJobs ?? 5);
