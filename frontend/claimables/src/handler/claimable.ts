@@ -8,7 +8,7 @@ import { BrowserProvider, Wallet } from 'ethers';
 
 type Claimable = {
     uri: string,
-    metadata: ClaimableMetadata
+    metadata: ClaimableMetadata,
 }
 
 type ClaimDetails = {
@@ -33,7 +33,7 @@ async function getClaimable(tokenAddress: string, tokenId: number): Promise<Clai
     let metadata = await GetOpenSeaMetadataFromURI(uri);
 
     return {
-        uri: ResolveArweaveURIToGateway(metadata.animation_url),
+        uri: ResolveArweaveURIToGateway(metadata.animation_url) + '/.mp4',
         metadata: getClaimableMetadataFromOpenseaMetadata(metadata)
     };
 }

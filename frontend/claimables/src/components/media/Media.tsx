@@ -23,7 +23,6 @@ async function getMediaSafari(src: string): Promise<string> {
 
 export default function Media(props: MediaProps) {
     
-    
     let ext = props.src.split(".").pop();
     let [isLoading, setIsLoading] = useState<boolean>(true);
     let [mediaSrc, setMediaSrc] = useState<string>('');
