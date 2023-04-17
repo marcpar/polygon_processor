@@ -1,20 +1,16 @@
-import { useRouter } from 'next/router';
 import style from '@/styles/claim.module.css';
 import Tilt from 'react-parallax-tilt';
 import Podium from '@/assets/PODIUM-VirtualMedal.png';
 import ordinal from 'ordinal';
-import { useEffect, useState, MouseEvent } from 'react';
+import { useState, MouseEvent } from 'react';
 import Media from '@/components/media/Media';
-import { Claimable } from '@/handler';
-
-import LoaderModal from '@/components/loader/LoaderModal';
+import { Claimable } from '@/handler/common';
 
 export default function ClaimNFT(props: {
     claimable: Claimable, isAlreadyClaimed: boolean, isClaimable: boolean, claimOnClick: () => Promise<void>, downloadOnClick: () => Promise<void>
 }) {
 
     let [isMediaLoading, setIsMediaLoading] = useState<boolean>(true);
-    let [isLoaderOpen, setIsLoaderOpen] = useState<boolean>(false);
     let claimOnClick = props.claimOnClick;
     let downloadOnClick = props.downloadOnClick;
     let claimable = props.claimable;
@@ -22,10 +18,7 @@ export default function ClaimNFT(props: {
     let isAlreadyClaimed = props.isAlreadyClaimed;
 
     function _claimOnClick(e: MouseEvent<HTMLButtonElement>) {
-        setIsLoaderOpen(true);
-        claimOnClick().finally(() => {
-            setIsLoaderOpen(false);
-        });
+        claimOnClick();
     }
 
     function _onDownloadClick(e: MouseEvent<HTMLButtonElement>) {
@@ -65,7 +58,7 @@ export default function ClaimNFT(props: {
                         <hr />
                     </div>
                     <div className={style.card_footer}>
-                        <button onClick={_claimOnClick} disabled={isMediaLoading || !isClaimable || isAlreadyClaimed || isLoaderOpen}>{isAlreadyClaimed ? 'Already Claimed' : 'Claim your NFT'}</button>
+                        <button onClick={_claimOnClick} disabled={isMediaLoading || !isClaimable || isAlreadyClaimed}>{isAlreadyClaimed ? 'Already Claimed' : 'Claim your NFT'}</button>
                     </div>
                 </div>
                 <div className={style.card}>
@@ -82,7 +75,6 @@ export default function ClaimNFT(props: {
                     </div>
                 </div>
             </div>
-            <LoaderModal isOpen={isLoaderOpen} />
         </div>
     );
 }

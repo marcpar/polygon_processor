@@ -1,15 +1,16 @@
 import { useRouter } from 'next/router';
 import style from '@/styles/claim.module.css';
 import { useEffect, useState } from 'react';
-import {claimNFT, checkIfAlreadyClaimed, getClaimable } from '@/handler/polygon';
+import { claimNFT, getClaimable } from '@/handler/near';
 import { GridLoader } from 'react-spinners';
 import { POLYGON_OPENSEA_BASE_URL } from '@/config';
-import { configureProvider } from '@/lib/eth';
 import ClaimNFT from '@/components/claim/ClaimNFT';
 import LoaderModal from '@/components/loader/LoaderModal';
-import { ClaimDetails, Claimable, parseFromBase64String } from '@/handler/common';
+import { Claimable, ClaimDetails, parseFromBase64String } from '@/handler/common';
+import ClaimOptionsModal from '@/components/near/ClaimOptionsModal';
+import ClaimWithNewAccountModal from '@/components/near/ClaimWithNewAccountModal';
 
-export default function ClaimPolygon() {
+export default function ClaimNear() {
     const router = useRouter();
     let contractAddress = router.query.contractAddress as string;
     let tokenID = router.query.tokenID as string;
@@ -17,18 +18,14 @@ export default function ClaimPolygon() {
     let [isClaimable, setIsClaimable] = useState<boolean>(false);
     let [isAlreadyClaimed, setIsAlreadyClaimed] = useState<boolean>(false);
     let [claimDetails, setClaimDetails] = useState<ClaimDetails | undefined>(undefined);
-    let [isWalletConfigured, setIsWalletConfigured] = useState<boolean>(false);
     let [isLoaderModalOpen, setIsLoaderModalOpen] = useState<boolean>(false);
+    let [isClaimOptionsOpen, setIsClaimOptionsOpen] = useState<boolean>(false);
+    let [isClaimWithNewAccountOpen, setIsClaimWithNewAccountOpen] = useState<boolean>(false);
 
     async function claimOnClick() {
+        setIsClaimOptionsOpen(true);    
         if (claimDetails) {
-            setIsLoaderModalOpen(true);
-            claimNFT(claimDetails).then(() => {
-                setIsAlreadyClaimed(true);
-                window.location.href = `${POLYGON_OPENSEA_BASE_URL}/${claimDetails?.TokenContractAddress}/${claimDetails?.TokenId}`
-            }).finally(() => {
-                setIsLoaderModalOpen(false);
-            });
+            
         }
     }
 
@@ -41,44 +38,41 @@ export default function ClaimPolygon() {
         anchor.click();
     }
 
-    useEffect(() => {
-        if (!isWalletConfigured) {
-            configureProvider().then(() => {
-                console.log('configured');
-                setIsWalletConfigured(true);
-            })
-        }
-    }, [isWalletConfigured]);
+    function onClaimOptionWithExistingAccount() {
+        alert('claim with existing')
+    }
+    function onClaimOptionWithNewAccount() {
+        setIsClaimOptionsOpen(false);
+        setIsClaimWithNewAccountOpen(true);
+    }
+
+    function onClaimWithNewAccount (accountId: string, privateKey: string, publicKey: string) {
+        setIsClaimWithNewAccountOpen(false);
+        alert(`${accountId}: ${privateKey}`);
+        setIsLoaderModalOpen(true);
+    }
+
 
     useEffect(() => {
-        if (!isWalletConfigured) return;
-        if (!claimDetails) {
+        if (!claimDetails && window.location.hash.length > 0) {
             setClaimDetails(parseFromBase64String(window.location.hash));
         }
-    }, [isWalletConfigured, claimDetails]);
+    }, [claimDetails]);
 
     useEffect(() => {
-        if (!isWalletConfigured) return;
         if (claimable === undefined && contractAddress && tokenID) {
-            getClaimable(contractAddress, parseInt(tokenID, 10)).then(async (claimable) => {
+            getClaimable(contractAddress, tokenID).then(claimable => {
+                console.log(claimable);
                 setClaimable(claimable);
-            }).catch(e => {
-                window.location.reload();
             });
         }
-    }, [isWalletConfigured, claimable, contractAddress, tokenID]);
+    }, [claimable, contractAddress, tokenID]);
 
     useEffect(() => {
-        if (!isWalletConfigured) return;
         if (!isAlreadyClaimed && claimDetails) {
-            checkIfAlreadyClaimed(claimDetails).then(async (isClaimed) => {
-                setIsAlreadyClaimed(isClaimed);
-                setIsClaimable(!isClaimed);
-            }).catch(e => {
-                window.location.reload();
-            });
+
         }
-    }, [isWalletConfigured, isAlreadyClaimed, claimDetails]);
+    }, [isAlreadyClaimed, claimDetails]);
 
     if (claimable === null || claimable === undefined) {
         return (
@@ -95,9 +89,20 @@ export default function ClaimPolygon() {
                 claimable={claimable}
                 downloadOnClick={downloadOnClick}
                 isAlreadyClaimed={isAlreadyClaimed}
-                isClaimable={isClaimable}
+                isClaimable={isClaimable || true}
             />
             <LoaderModal isOpen={isLoaderModalOpen} />
+            <ClaimOptionsModal
+                isOpen={isClaimOptionsOpen}
+                onClaimWithExistingAccount={onClaimOptionWithExistingAccount}
+                onClaimWithNewAccount={onClaimOptionWithNewAccount}
+                onRequestClose={() => setIsClaimOptionsOpen(false)}
+            />
+            <ClaimWithNewAccountModal
+                isOpen={isClaimWithNewAccountOpen}
+                onClaimWithNewAccount={onClaimWithNewAccount}
+                onRequestClose={() => setIsClaimWithNewAccountOpen(false)}
+            />
         </div>
     );
 }

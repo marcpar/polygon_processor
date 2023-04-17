@@ -1,6 +1,6 @@
 import { keccak256 } from 'ethers';
 import abi from "ethereumjs-abi";
-import { BICONOMY_API_ID, BICONOMY_API_KEY, CLAIM_TOKEN_ADDRESS } from '@/config';
+import { POLYGON_BICONOMY_API_ID, POLYGON_BICONOMY_API_KEY, POLYGON_CLAIM_TOKEN_ADDRESS } from '@/config';
 let helperAttributes = {} as any;
 let supportedNetworks = [42, 4, 5]; //add more
 helperAttributes.ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -125,19 +125,21 @@ async function sendTransaction({ userAddress, req, sig, domainSeparator, signatu
     let result = await fetch(`https://api.biconomy.io/api/v2/meta-tx/native`, {
       method: "POST",
       headers: {
-        "x-api-key": BICONOMY_API_KEY,
+        "x-api-key": POLYGON_BICONOMY_API_KEY,
         'Content-Type': 'application/json;charset=utf-8'
       },
       body: JSON.stringify({
-        "to": CLAIM_TOKEN_ADDRESS,
-        "apiId": BICONOMY_API_ID,
+        "to": POLYGON_CLAIM_TOKEN_ADDRESS,
+        "apiId": POLYGON_BICONOMY_API_ID,
         "params": params,
         "from": userAddress,
         "signatureType": signatureType
       })
     });
     let body = await result.json();
-    console.log(body)
+    if (`${body.code}` !== '200') {
+      throw new Error(`Transaction failed: ${body}`);
+    }
 
   }
 };

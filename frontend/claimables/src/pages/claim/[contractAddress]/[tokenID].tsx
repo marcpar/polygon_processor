@@ -5,11 +5,12 @@ import Podium from '@/assets/PODIUM-VirtualMedal.png';
 import ordinal from 'ordinal';
 import { useEffect, useState, MouseEvent } from 'react';
 import Media from '@/components/media/Media';
-import { ClaimDetails, claimNFT, parseFromBase64String, checkIfAlreadyClaimed, Claimable, getClaimable } from '@/handler';
+import { claimNFT, checkIfAlreadyClaimed, getClaimable } from '@/handler/polygon';
 import { GridLoader } from 'react-spinners';
-import { OPENSEA_BASE_URL } from '@/config';
+import { POLYGON_OPENSEA_BASE_URL } from '@/config';
 import { configureProvider } from '@/lib/eth';
 import LoaderModal from '@/components/loader/LoaderModal';
+import { ClaimDetails, Claimable, parseFromBase64String } from '@/handler/common';
 
 export default function ClaimNFT() {
     const router = useRouter();
@@ -30,7 +31,7 @@ export default function ClaimNFT() {
             setIsLoaderOpen(true);
             claimNFT(claimDetails).then(() => {
                 setIsAlreadyClaimed(true);
-                window.location.href = `${OPENSEA_BASE_URL}/${claimDetails?.TokenContractAddress}/${claimDetails?.TokenId}`
+                window.location.href = `${POLYGON_OPENSEA_BASE_URL}/${claimDetails?.TokenContractAddress}/${claimDetails?.TokenId}`
             }).catch(e => {
                 throw new Error(e);
             }).finally(() => {

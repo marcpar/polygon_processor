@@ -1,0 +1,47 @@
+.main {
+    padding: 1em;
+    background-color: white;
+    color: black;
+    max-width: 800px;
+    min-width: 370px;
+}
+
+.main > .header {
+    text-align: right;
+    font-size: 30px;
+    font-weight: bold;
+    position: absolute;
+    right: 20px;
+}
+
+.main > .header > span:hover {
+    cursor: pointer;
+}
+
+.main > .content {
+    padding: 1em;
+}
+
+.main > .content > .option {
+    margin-bottom: 40px;
+}
+
+.main > .content > .option > p {
+    font-weight: 1;
+    padding-right: 50px;
+}
+
+.main > .content > .option > button {
+    background-color: black;
+    color: rgb(177, 253, 99);
+    display: block;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+.main > .content > .option > button:hover {
+    cursor: pointer;
+}
