@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router';
 import style from '@/styles/claim.module.css';
 import { useEffect, useState } from 'react';
-import {claimNFT, checkIfAlreadyClaimed, getClaimable } from '@/handler/polygon';
+import {claimNFT, checkIfAlreadyClaimed, getClaimable, ClaimDetails, parseFromBase64String } from '@/handler/polygon';
 import { GridLoader } from 'react-spinners';
 import { POLYGON_OPENSEA_BASE_URL } from '@/config';
 import { configureProvider } from '@/lib/eth';
 import ClaimNFT from '@/components/claim/ClaimNFT';
 import LoaderModal from '@/components/loader/LoaderModal';
-import { ClaimDetails, Claimable, parseFromBase64String } from '@/handler/common';
+import { Claimable } from '@/handler/common';
 
 export default function ClaimPolygon() {
     const router = useRouter();
@@ -44,7 +44,6 @@ export default function ClaimPolygon() {
     useEffect(() => {
         if (!isWalletConfigured) {
             configureProvider().then(() => {
-                console.log('configured');
                 setIsWalletConfigured(true);
             })
         }

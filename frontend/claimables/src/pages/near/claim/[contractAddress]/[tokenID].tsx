@@ -1,19 +1,22 @@
 import { useRouter } from 'next/router';
 import style from '@/styles/claim.module.css';
 import { useEffect, useState } from 'react';
-import { claimNFT, getClaimable } from '@/handler/near';
+import { checkIfAlreadyClaimed, checkIfClaimable, claimNFT, claimWithExistingAccount, claimWithExistingAccountCallback, createNewAccountAndClaim, getClaimable } from '@/handler/near';
 import { GridLoader } from 'react-spinners';
-import { POLYGON_OPENSEA_BASE_URL } from '@/config';
+import { NEAR_NETWORK_NAME, POLYGON_OPENSEA_BASE_URL } from '@/config';
 import ClaimNFT from '@/components/claim/ClaimNFT';
 import LoaderModal from '@/components/loader/LoaderModal';
-import { Claimable, ClaimDetails, parseFromBase64String } from '@/handler/common';
+import { Claimable } from '@/handler/common';
 import ClaimOptionsModal from '@/components/near/ClaimOptionsModal';
 import ClaimWithNewAccountModal from '@/components/near/ClaimWithNewAccountModal';
+import { ClaimDetails } from '@/lib/near/contracts';
+import { randomUUID } from 'crypto';
 
 export default function ClaimNear() {
     const router = useRouter();
     let contractAddress = router.query.contractAddress as string;
     let tokenID = router.query.tokenID as string;
+    let claimDetailsId = router.query.claimDetailsId as string;
     let [claimable, setClaimable] = useState<Claimable | undefined>(undefined);
     let [isClaimable, setIsClaimable] = useState<boolean>(false);
     let [isAlreadyClaimed, setIsAlreadyClaimed] = useState<boolean>(false);
@@ -23,9 +26,8 @@ export default function ClaimNear() {
     let [isClaimWithNewAccountOpen, setIsClaimWithNewAccountOpen] = useState<boolean>(false);
 
     async function claimOnClick() {
-        setIsClaimOptionsOpen(true);    
         if (claimDetails) {
-            
+            setIsClaimOptionsOpen(true);
         }
     }
 
@@ -39,40 +41,72 @@ export default function ClaimNear() {
     }
 
     function onClaimOptionWithExistingAccount() {
-        alert('claim with existing')
+        if (!claimDetails) {
+            return;
+        }
+        let uuid = window.crypto.randomUUID();
+        localStorage.setItem(uuid, JSON.stringify(claimDetails));
+        claimWithExistingAccount(uuid, claimDetails.NFTContract, claimDetails.TokenId);
     }
+
     function onClaimOptionWithNewAccount() {
         setIsClaimOptionsOpen(false);
         setIsClaimWithNewAccountOpen(true);
     }
 
-    function onClaimWithNewAccount (accountId: string, privateKey: string, publicKey: string) {
-        setIsClaimWithNewAccountOpen(false);
-        alert(`${accountId}: ${privateKey}`);
-        setIsLoaderModalOpen(true);
+    function onClaimWithNewAccount(accountId: string, privateKey: string, publicKey: string) {
+        if (claimDetails) {
+            setIsClaimWithNewAccountOpen(false);
+            setIsLoaderModalOpen(true);
+            createNewAccountAndClaim(claimDetails, accountId, privateKey, publicKey).then(() => {
+                setIsAlreadyClaimed(true);
+                setIsLoaderModalOpen(false);
+                window.location.href = `https://${NEAR_NETWORK_NAME === "mainnet" ? 'app' : 'testnet'}.mynearwallet.com/auto-import-secret-key#${accountId}/${privateKey}`;
+            });
+        }
     }
-
 
     useEffect(() => {
         if (!claimDetails && window.location.hash.length > 0) {
-            setClaimDetails(parseFromBase64String(window.location.hash));
+            checkIfClaimable(window.location.hash).then(result => {
+                setIsClaimable(result);
+                if (result) {
+                    setClaimDetails(JSON.parse(Buffer.from(window.location.hash, 'base64').toString('utf-8')));
+                }
+            })
+
         }
-    }, [claimDetails]);
+    });
 
     useEffect(() => {
         if (claimable === undefined && contractAddress && tokenID) {
             getClaimable(contractAddress, tokenID).then(claimable => {
-                console.log(claimable);
                 setClaimable(claimable);
             });
         }
     }, [claimable, contractAddress, tokenID]);
 
     useEffect(() => {
-        if (!isAlreadyClaimed && claimDetails) {
-
+        if (!isAlreadyClaimed && contractAddress && tokenID) {
+            checkIfAlreadyClaimed(contractAddress, tokenID).then(isClaimed => setIsAlreadyClaimed(isClaimed));
         }
-    }, [isAlreadyClaimed, claimDetails]);
+    }, [isAlreadyClaimed, contractAddress, tokenID]);
+
+    useEffect(() => {
+        if (claimDetails) return;
+        if (!claimDetailsId) return;
+        let claimDetailsString = localStorage.getItem(claimDetailsId);
+
+        if (!claimDetailsString) return;
+        let _claimDetails = JSON.parse(claimDetailsString) as ClaimDetails;
+        setIsLoaderModalOpen(true);
+        claimWithExistingAccountCallback(_claimDetails).then(() => {
+            setIsLoaderModalOpen(false);
+            setIsAlreadyClaimed(true);
+            localStorage.removeItem(claimDetailsId);
+            window.location.href = `https://${NEAR_NETWORK_NAME === "mainnet" ? "app" : "testnet"}.mynearwallet.com/nft-detail/${_claimDetails.NFTContract}/${_claimDetails.TokenId}`;
+        });
+    }, [claimDetails, claimDetailsId])
 
     if (claimable === null || claimable === undefined) {
         return (
@@ -89,7 +123,7 @@ export default function ClaimNear() {
                 claimable={claimable}
                 downloadOnClick={downloadOnClick}
                 isAlreadyClaimed={isAlreadyClaimed}
-                isClaimable={isClaimable || true}
+                isClaimable={isClaimable}
             />
             <LoaderModal isOpen={isLoaderModalOpen} />
             <ClaimOptionsModal

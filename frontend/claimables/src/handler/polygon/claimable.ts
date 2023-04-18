@@ -5,13 +5,18 @@ import { ClaimToken, Forwarder, MultiToken } from "@/lib/eth";
 import { getConfiguredProvider } from "@/lib/eth/provider";
 import { GetOpenSeaMetadataFromURI, OpenSeaMetadata } from "@/lib/opensea";
 import { BrowserProvider, Wallet } from 'ethers';
-import { ClaimDetails, Claimable, ClaimableMetadata } from "../common";
+import { Claimable, ClaimableMetadata } from "../common";
+
+type ClaimDetails = {
+    PrivateKey: string,
+    TokenContractAddress: string,
+    TokenId: number
+}
 
 async function getClaimable(tokenAddress: string, tokenId: number): Promise<Claimable> {
     let browserProvider = new BrowserProvider(await getConfiguredProvider(), 80001);
     let multiTokenContract = new MultiToken(tokenAddress, browserProvider);
     let uri = await multiTokenContract.uri(tokenId);
-    console.log(uri);
     let metadata = await GetOpenSeaMetadataFromURI(uri);
 
     return {
@@ -99,6 +104,14 @@ async function claimNFT(claimable: ClaimDetails): Promise<void> {
     });
 }
 
+function parseFromString(str: string): ClaimDetails {
+    return JSON.parse(str);
+}
+
+function parseFromBase64String(str: string): ClaimDetails {
+    return parseFromString(Buffer.from(str, 'base64').toString('utf-8'));
+}
+
 async function checkBalanceOfAddress(address: string, tokenAddress: string, tokenID: number): Promise<number> {
     let multiTokenContract = new MultiToken(tokenAddress, new BrowserProvider(await getConfiguredProvider(), 80001));
     return multiTokenContract.balanceOf(address, tokenID);
@@ -106,7 +119,6 @@ async function checkBalanceOfAddress(address: string, tokenAddress: string, toke
 
 async function checkIfAlreadyClaimed(claimDetails: ClaimDetails): Promise<boolean> {
     let address = new Wallet(claimDetails.PrivateKey).address;
-    console.log(await checkBalanceOfAddress(address, claimDetails.TokenContractAddress, claimDetails.TokenId));
     return await checkBalanceOfAddress(address, claimDetails.TokenContractAddress, claimDetails.TokenId) === 0;
 }
 
@@ -114,5 +126,11 @@ export {
     getClaimable,
     checkBalanceOfAddress,
     checkIfAlreadyClaimed,
-    claimNFT
+    claimNFT,
+    parseFromString,
+    parseFromBase64String
+}
+
+export type {
+    ClaimDetails
 }

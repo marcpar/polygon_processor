@@ -24,9 +24,6 @@ type ClaimChallenge = {
 }
 
 interface VaultContract extends nearAPI.Contract {
-    is_claimable: (args: {
-        claim_token: string
-    }) => Promise<Claimable | null>,
     get_claimable: (args: {
         nft_account: string,
         token_id: string
@@ -43,7 +40,7 @@ interface VaultContract extends nearAPI.Contract {
 
 function GetVaultContract(account: nearAPI.Account): VaultContract {
     return new nearAPI.Contract(account, NEAR_VAULT_CONTRACT_ADDRESS, {
-        viewMethods: ['is_claimable, get_claimable'],
+        viewMethods: ['get_claimable'],
         changeMethods: ['claim']
     } as any) as VaultContract;
 }
@@ -52,7 +49,7 @@ async function GetVaultContractAnonAsync(): Promise<VaultContract> {
     let near = await GetConnection(GetConfig(NEAR_NETWORK_NAME));
     let account = new nearAPI.Account(near.connection, NEAR_VAULT_CONTRACT_ADDRESS);
     return new nearAPI.Contract(account, NEAR_VAULT_CONTRACT_ADDRESS, {
-        viewMethods: ['is_claimable', 'get_claimable'],
+        viewMethods: ['get_claimable'],
         changeMethods: []
     } as any) as VaultContract;
 }
