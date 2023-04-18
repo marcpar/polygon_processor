@@ -95,7 +95,7 @@ export default function CreateAccount(props: {
                     </ul>
                     <div>Your account ID CANNOT contain:</div>
                     <ul>
-                        <li>Characters "@" or "."</li>
+                        <li>Characters &quot;@&quot; or &quot;.&quot;</li>
                         <li>Fewer than 2 characters</li>
                         <li>More than 64 characters (including {NEAR_ACCOUNT_POSTFIX})</li>
                     </ul>

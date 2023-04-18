@@ -21,9 +21,9 @@ export default function SecurePhrase(props: {
     return (
         <div className={styles.main}>
             <h1>Setup Your Secure Passphrase</h1>
-            <p>Write down the following words in order and keep them somewhere safe. Anyone with access to it will also have access your account! You'll be asked to verify your passphrase next.</p>
+            <p>Write down the following words in order and keep them somewhere safe. Anyone with access to it will also have access your account! You&lsquo;ll be asked to verify your passphrase next.</p>
             <div className={styles.phrase}>
-                {seed.seedPhrase.split(' ').map((e, i) => {
+                {seed.seedPhrase.split(' ').map((e: string, i: number) => {
                     return (
                         <div key={i}>
                             <span>{i+1}</span><span>{e}</span>
