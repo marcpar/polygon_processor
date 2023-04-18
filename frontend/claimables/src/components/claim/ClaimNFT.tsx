@@ -5,6 +5,7 @@ import ordinal from 'ordinal';
 import { useState, MouseEvent } from 'react';
 import Media from '@/components/media/Media';
 import { Claimable } from '@/handler/common';
+import Image from 'next/image';
 
 export default function ClaimNFT(props: {
     claimable: Claimable, isAlreadyClaimed: boolean, isClaimable: boolean, claimOnClick: () => Promise<void>, downloadOnClick: () => Promise<void>
@@ -31,7 +32,7 @@ export default function ClaimNFT(props: {
 
     return (
         <div className={style.main_container}>
-            <img alt="podium_logo" className={style.podium_logo} src={Podium.src} />
+            <Image alt="podium_logo" className={style.podium_logo} src={Podium.src} />
             <div className={style.greetings}>
                 <p><b>Congratulations {claimable.metadata.name} for coming {ordinal(parseInt(claimable.metadata.position, 10))} in {claimable.metadata.group} at the {claimable.metadata.event}, {claimable.metadata.date}.</b></p>
                 <p>Your virtual medal is ready to claim as an NFT, featuring many benefits. Or simply download the media file as a digital collectible.</p>

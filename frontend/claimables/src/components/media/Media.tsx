@@ -2,6 +2,7 @@ import styles from "./Media.module.css";
 import { CircleLoader, BounceLoader } from "react-spinners";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { detect } from "detect-browser";
+import Image from 'next/image';
 
 type MediaProps = {
     src: string
@@ -67,7 +68,7 @@ export default function Media(props: MediaProps) {
         default:
             return (
                 <div className={styles.media_container}>
-                    <img src={mediaSrc} className={isLoading ? styles.hidden : styles.media} onLoad={() => {onLoadHandler()}} alt={"nft"} />
+                    <Image src={mediaSrc} className={isLoading ? styles.hidden : styles.media} onLoad={() => {onLoadHandler()}} alt={"nft"} />
                     <BounceLoader className={styles.loader} loading={isLoading} color={"rgb(0, 98, 190)"} />
                 </div>
             );
