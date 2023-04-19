@@ -6,7 +6,6 @@ import { useState, MouseEvent } from 'react';
 import Media from '@/components/media/Media';
 import { Claimable } from '@/handler/common';
 
-
 export default function ClaimNFT(props: {
     claimable: Claimable, isAlreadyClaimed: boolean, isClaimable: boolean, claimOnClick: () => Promise<void>, downloadOnClick: () => Promise<void>
 }) {
