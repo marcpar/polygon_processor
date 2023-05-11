@@ -57,7 +57,8 @@ async function getClaimableMetadataFromReference(reference: string): Promise<Cla
             case 'groupname':
                 group = el.Value
                 continue;
-            case 'position':
+            case 'raceposition':
+            case 'race position':
                 position = el.Value
                 continue;
             default:
