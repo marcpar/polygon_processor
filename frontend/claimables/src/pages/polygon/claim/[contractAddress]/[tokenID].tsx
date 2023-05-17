@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import style from '@/styles/claim.module.css';
+import style from '@/styles/components/claim/claim.module.css';
 import { useEffect, useState } from 'react';
 import {claimNFT, checkIfAlreadyClaimed, getClaimable, ClaimDetails, parseFromBase64String } from '@/handler/polygon';
 import { GridLoader } from 'react-spinners';
