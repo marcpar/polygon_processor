@@ -19,6 +19,13 @@ const config: HardhatUserConfig = {
         process.env.PRIVATE_KEY_NO_BALANCE ?? "0x0000000000000000000000000000000000000000000000000000000000000000",
         "810d695b52646cc781cb490bc63fb79a7195eb3c6760801a8ff90939510a0b46"
       ]
+    },
+    "mainnet": {
+      url: 'https://polygon-mainnet.g.alchemy.com/v2/PjEDeAPVWrbibRfnIyuQiJY1jgQ1ddUw',
+      chainId: 137,
+      accounts: [
+        process.env.PRIVATE_KEY ?? '0x0000000000000000000000000000000000000000000000000000000000000000'
+      ]
     }
   }
 };
