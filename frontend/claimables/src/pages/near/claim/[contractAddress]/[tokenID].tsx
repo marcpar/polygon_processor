@@ -138,7 +138,7 @@ export default function ClaimNear() {
                 onClaimWithNewAccount={onClaimWithNewAccount}
                 onRequestClose={() => setIsClaimWithNewAccountOpen(false)}
             />
-            <ShareSocialMedia contractAddress={contractAddress} tokenId={tokenID} network='near'/>
+            <ShareSocialMedia claimableURI={claimable.uri}/>
         </div>
     );
 }

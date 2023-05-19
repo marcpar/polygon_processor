@@ -4,25 +4,37 @@ import FacebookShareButton from './buttons/FacebookShareButton';
 import TwitterShareButton from './buttons/TwitterShareButton';
 import LinkedInShareButton from './buttons/LinkedInShareButton';
 import CopyLinkButton from './buttons/CopyLinkButton';
-import { NEAR_NETWORK_NAME } from '@/config';
+import { useEffect, useState } from 'react';
 
 export default function ShareSocialMedia(props: {
-    contractAddress: string,
-    tokenId: string,
-    network: string,
+    claimableURI: string
 }) {
+    let [uri, setURI] = useState<string>('');
 
-    let claimableURI = '';
-    if (props.network === 'near') {
-        claimableURI = `https://${NEAR_NETWORK_NAME === 'testnet' ? 'testnet' : 'www' }.mintbase.xyz/contract/${props.contractAddress}/token/${props.tokenId}`;
-    }
+    useEffect(() => {
+        if (uri !== '') return;
+        let url = new URL(props.claimableURI);
+        let txID = url.pathname.split('/')[1];
+        url.pathname = `${txID}/thumbnail.jpg`
+        fetch(url).then((res) => {
+            console.log(res);
+            if (res.ok) {
+                setURI(res.url);
+            } else {
+                setURI(props.claimableURI);
+            }
+        });
+    });
+    
+    if (uri === '') return (<div></div>);
+
     return (
         <div className={style.main}>
             <div className={style.share_options}>
-                <FacebookShareButton claimableURI={claimableURI}/>
-                <TwitterShareButton claimableURI={claimableURI}/>
-                <LinkedInShareButton claimableURI={claimableURI}/>
-                <CopyLinkButton claimableURI={claimableURI}/>
+                <FacebookShareButton claimableURI={uri}/>
+                <TwitterShareButton claimableURI={uri}/>
+                <LinkedInShareButton claimableURI={uri}/>
+                <CopyLinkButton claimableURI={uri}/>
             </div>
         </div>
     );
