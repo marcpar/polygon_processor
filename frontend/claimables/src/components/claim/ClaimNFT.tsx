@@ -70,7 +70,7 @@ export default function ClaimNFT(props: {
                     </div>
                 </div>
             </div>
-            <ShareSocialMedia/>
+            <ShareSocialMedia claimableURI={claimable.uri}/>
         </div>
     );
 }
