@@ -5,14 +5,16 @@ import TwitterShareButton from './buttons/TwitterShareButton';
 import LinkedInShareButton from './buttons/LinkedInShareButton';
 import CopyLinkButton from './buttons/CopyLinkButton';
 
-export default function ShareSocialMedia() {
+export default function ShareSocialMedia(props: {
+    claimableURI: string
+}) {
     return (
         <div className={style.main}>
             <div className={style.share_options}>
-                <FacebookShareButton/>
-                <TwitterShareButton/>
-                <LinkedInShareButton/>
-                <CopyLinkButton/>
+                <FacebookShareButton claimableURI={props.claimableURI}/>
+                <TwitterShareButton claimableURI={props.claimableURI}/>
+                <LinkedInShareButton claimableURI={props.claimableURI}/>
+                <CopyLinkButton claimableURI={props.claimableURI}/>
             </div>
         </div>
     );

@@ -1,9 +1,10 @@
 
 
-export default function CopyLinkButton() {
+export default function CopyLinkButton(props: {
+    claimableURI: string
+}) {
     function onClick() {
-        let redirectURL = new URL(window.location.href);
-        redirectURL.hash = '';
+        let redirectURL = new URL(props.claimableURI);
         navigator.clipboard.writeText(redirectURL.toString()).then(() => {
             alert('copied to clipboard');
         });
