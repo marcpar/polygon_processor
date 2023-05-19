@@ -4,17 +4,25 @@ import FacebookShareButton from './buttons/FacebookShareButton';
 import TwitterShareButton from './buttons/TwitterShareButton';
 import LinkedInShareButton from './buttons/LinkedInShareButton';
 import CopyLinkButton from './buttons/CopyLinkButton';
+import { NEAR_NETWORK_NAME } from '@/config';
 
 export default function ShareSocialMedia(props: {
-    claimableURI: string
+    contractAddress: string,
+    tokenId: string,
+    network: string,
 }) {
+
+    let claimableURI = '';
+    if (props.network === 'near') {
+        claimableURI = `https://${NEAR_NETWORK_NAME === 'testnet' ? 'testnet' : 'www' }.mintbase.xyz/contract/${props.contractAddress}/token/${props.tokenId}`;
+    }
     return (
         <div className={style.main}>
             <div className={style.share_options}>
-                <FacebookShareButton claimableURI={props.claimableURI}/>
-                <TwitterShareButton claimableURI={props.claimableURI}/>
-                <LinkedInShareButton claimableURI={props.claimableURI}/>
-                <CopyLinkButton claimableURI={props.claimableURI}/>
+                <FacebookShareButton claimableURI={claimableURI}/>
+                <TwitterShareButton claimableURI={claimableURI}/>
+                <LinkedInShareButton claimableURI={claimableURI}/>
+                <CopyLinkButton claimableURI={claimableURI}/>
             </div>
         </div>
     );
