@@ -5,7 +5,6 @@ import ordinal from 'ordinal';
 import { useState, MouseEvent } from 'react';
 import Media from '@/components/media/Media';
 import { Claimable } from '@/handler/common';
-import ShareSocialMedia from '../social/ShareSocialMedia';
 
 export default function ClaimNFT(props: {
     claimable: Claimable, isAlreadyClaimed: boolean, isClaimable: boolean, claimOnClick: () => Promise<void>, downloadOnClick: () => Promise<void>
@@ -70,7 +69,6 @@ export default function ClaimNFT(props: {
                     </div>
                 </div>
             </div>
-            <ShareSocialMedia claimableURI={claimable.uri}/>
         </div>
     );
 }

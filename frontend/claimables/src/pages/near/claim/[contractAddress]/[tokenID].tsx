@@ -11,6 +11,7 @@ import ClaimOptionsModal from '@/components/near/ClaimOptionsModal';
 import ClaimWithNewAccountModal from '@/components/near/ClaimWithNewAccountModal';
 import { ClaimDetails } from '@/lib/near/contracts';
 import { randomUUID } from 'crypto';
+import ShareSocialMedia from '@/components/social/ShareSocialMedia';
 
 export default function ClaimNear() {
     const router = useRouter();
@@ -137,6 +138,7 @@ export default function ClaimNear() {
                 onClaimWithNewAccount={onClaimWithNewAccount}
                 onRequestClose={() => setIsClaimWithNewAccountOpen(false)}
             />
+            <ShareSocialMedia contractAddress={contractAddress} tokenId={tokenID} network='near'/>
         </div>
     );
 }
