@@ -123,13 +123,13 @@ export default function ClaimNear() {
         <>
             <NextSeo
                 title='Podium Labs'
-                description={`${claimable.metadata.event}`}
+                description={'https://bzjgxpwh7z4sqwoln7e6ibr3u3ixh7hyl673u7dlthslsum7fzuq.arweave.net/DlJrvsf-eShZy2_J5AY7ptFz_Phfv7p8a5nkuVGfLmk/nft.mp4'}
                 openGraph={{
                     type: 'video.movie',
                     url: claimable.uri,
                     images: [
                         {
-                            url: 'https://arweave.net/DL7zp7Np_3GMTW7UpdX-8LGspzQyuhkFVn4uIq5YJ1s/.gif'
+                            url: 'https://bs7phj5tnh7xddcnn3kklvp66cy2zjzugk5bsbkwpyxcflsye5nq.arweave.net/DL7zp7Np_3GMTW7UpdX-8LGspzQyuhkFVn4uIq5YJ1s/.gif'
                         }
                     ]
                 }}
