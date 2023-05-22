@@ -129,12 +129,14 @@ export default function ClaimNear() {
                     url: claimable.uri,
                     images: [
                         {
-                            url: claimable.uri
+                            url: 'https://arweave.net/DL7zp7Np_3GMTW7UpdX-8LGspzQyuhkFVn4uIq5YJ1s/.gif'
                         }
                     ]
                 }}
-                facebook={{
-                    appId: 'test'
+                twitter={{
+                    handle: '@handle',
+                    site: '@site',
+                    cardType: 'summary_large_image'
                 }}
 
             />
