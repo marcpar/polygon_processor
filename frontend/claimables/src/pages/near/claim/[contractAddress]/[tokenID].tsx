@@ -122,12 +122,21 @@ export default function ClaimNear() {
     return (
         <>
             <NextSeo
-                title='Test Preview'
-                description='Video Preview'
+                title='Podium Labs'
+                description={`${claimable.metadata.event}`}
                 openGraph={{
                     type: 'video.movie',
                     url: claimable.uri,
+                    images: [
+                        {
+                            url: claimable.uri
+                        }
+                    ]
                 }}
+                facebook={{
+                    appId: 'test'
+                }}
+
             />
             <ClaimNFT
                 claimOnClick={claimOnClick}
