@@ -12,6 +12,8 @@ import ClaimWithNewAccountModal from '@/components/near/ClaimWithNewAccountModal
 import { ClaimDetails } from '@/lib/near/contracts';
 import { randomUUID } from 'crypto';
 import ShareSocialMedia from '@/components/social/ShareSocialMedia';
+import { NextSeo } from 'next-seo';
+import { url } from 'inspector';
 
 export default function ClaimNear() {
     const router = useRouter();
@@ -118,7 +120,15 @@ export default function ClaimNear() {
     }
 
     return (
-        <div>
+        <>
+            <NextSeo
+                title='Test Preview'
+                description='Video Preview'
+                openGraph={{
+                    type: 'video.movie',
+                    url: claimable.uri,
+                }}
+            />
             <ClaimNFT
                 claimOnClick={claimOnClick}
                 claimable={claimable}
@@ -139,6 +149,6 @@ export default function ClaimNear() {
                 onRequestClose={() => setIsClaimWithNewAccountOpen(false)}
             />
             <ShareSocialMedia claimableURI={claimable.uri}/>
-        </div>
+        </>
     );
 }
