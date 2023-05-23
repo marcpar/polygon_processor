@@ -6,6 +6,7 @@ import { getConfiguredProvider } from "@/lib/eth/provider";
 import { GetOpenSeaMetadataFromURI, OpenSeaMetadata } from "@/lib/opensea";
 import { BrowserProvider, Wallet } from 'ethers';
 import { Claimable, ClaimableMetadata } from "../common";
+import { getJobID } from "@/lib/arweave/jobID";
 
 type ClaimDetails = {
     PrivateKey: string,
@@ -21,7 +22,8 @@ async function getClaimable(tokenAddress: string, tokenId: number): Promise<Clai
 
     return {
         uri: ResolveArweaveURIToGateway(metadata.animation_url) + '/.mp4',
-        metadata: getClaimableMetadataFromOpenseaMetadata(metadata)
+        metadata: getClaimableMetadataFromOpenseaMetadata(metadata),
+        jobID: await getJobID(uri)
     };
 }
 
