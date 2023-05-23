@@ -1,6 +1,7 @@
 type Claimable = {
     uri: string,
-    metadata: ClaimableMetadata
+    metadata: ClaimableMetadata,
+    jobID: string,
 }
 
 type ClaimableMetadata = {
