@@ -3,6 +3,7 @@ import { Claimable, ClaimableMetadata } from "../common";
 import { NEAR_NETWORK_NAME, NEAR_VAULT_CONTRACT_ADDRESS } from "@/config";
 import * as nearAPI from 'near-api-js';
 import { GetConfig, GetConfigInMemory } from "@/lib/near/connection";
+import { getJobID } from "@/lib/arweave/jobID";
 
 async function getClaimable(tokenAddress: string, tokenId: string): Promise<Claimable> {
     let nft = await GetNFTContract(tokenAddress);
@@ -22,7 +23,8 @@ async function getClaimable(tokenAddress: string, tokenId: string): Promise<Clai
 
     return {
         uri: `${meta.base_uri}/${res.metadata.media}`,
-        metadata: await getClaimableMetadataFromReference(`${meta.base_uri}/${res.metadata.reference}`)
+        metadata: await getClaimableMetadataFromReference(`${meta.base_uri}/${res.metadata.reference}`),
+        jobID: await getJobID(res.metadata.media?.split('/')[0] as string)
     }
 }
 

@@ -3,17 +3,15 @@ import style from '@/styles/components/claim/claim.module.css';
 import { useEffect, useState } from 'react';
 import { checkIfAlreadyClaimed, checkIfClaimable, claimNFT, claimWithExistingAccount, claimWithExistingAccountCallback, createNewAccountAndClaim, getClaimable } from '@/handler/near';
 import { GridLoader } from 'react-spinners';
-import { NEAR_NETWORK_NAME, POLYGON_OPENSEA_BASE_URL } from '@/config';
+import { ACTIVITY_REPORT_URL, NEAR_NETWORK_NAME, POLYGON_OPENSEA_BASE_URL } from '@/config';
 import ClaimNFT from '@/components/claim/ClaimNFT';
 import LoaderModal from '@/components/loader/LoaderModal';
 import { Claimable } from '@/handler/common';
 import ClaimOptionsModal from '@/components/near/ClaimOptionsModal';
 import ClaimWithNewAccountModal from '@/components/near/ClaimWithNewAccountModal';
 import { ClaimDetails } from '@/lib/near/contracts';
-import { randomUUID } from 'crypto';
 import ShareSocialMedia from '@/components/social/ShareSocialMedia';
 import { NextSeo } from 'next-seo';
-import { url } from 'inspector';
 
 export default function ClaimNear() {
     const router = useRouter();
@@ -35,6 +33,7 @@ export default function ClaimNear() {
     }
 
     async function downloadOnClick() {
+        fetch(`${ACTIVITY_REPORT_URL}/${claimable?.jobID}/download`);
         let anchor = document.createElement<"a">("a");
         let link = `${claimable?.uri}`;
         let data = await fetch(link);
@@ -159,7 +158,7 @@ export default function ClaimNear() {
                 onClaimWithNewAccount={onClaimWithNewAccount}
                 onRequestClose={() => setIsClaimWithNewAccountOpen(false)}
             />
-            <ShareSocialMedia claimableURI={claimable.uri}/>
+            <ShareSocialMedia claimableURI={claimable.uri} claimable={claimable}/>
         </>
     );
 }

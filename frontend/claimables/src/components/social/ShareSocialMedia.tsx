@@ -5,9 +5,11 @@ import TwitterShareButton from './buttons/TwitterShareButton';
 import LinkedInShareButton from './buttons/LinkedInShareButton';
 import CopyLinkButton from './buttons/CopyLinkButton';
 import { useEffect, useState } from 'react';
+import { Claimable } from '@/handler/common';
 
 export default function ShareSocialMedia(props: {
-    claimableURI: string
+    claimableURI: string,
+    claimable: Claimable
 }) {
     let [uri, setURI] = useState<string>('');
 
@@ -34,7 +36,7 @@ export default function ShareSocialMedia(props: {
                 <FacebookShareButton claimableURI={uri}/>
                 <TwitterShareButton claimableURI={uri}/>
                 <LinkedInShareButton claimableURI={uri}/>
-                <CopyLinkButton claimableURI={uri}/>
+                <CopyLinkButton claimableURI={uri} claimable={props.claimable}/>
             </div>
         </div>
     );
