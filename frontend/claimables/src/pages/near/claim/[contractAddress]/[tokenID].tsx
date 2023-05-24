@@ -3,7 +3,7 @@ import style from '@/styles/components/claim/claim.module.css';
 import { useEffect, useState } from 'react';
 import { checkIfAlreadyClaimed, checkIfClaimable, claimNFT, claimWithExistingAccount, claimWithExistingAccountCallback, createNewAccountAndClaim, getClaimable } from '@/handler/near';
 import { GridLoader } from 'react-spinners';
-import { ACTIVITY_REPORT_URL, NEAR_NETWORK_NAME, POLYGON_OPENSEA_BASE_URL } from '@/config';
+import { NEAR_NETWORK_NAME } from '@/config';
 import ClaimNFT from '@/components/claim/ClaimNFT';
 import LoaderModal from '@/components/loader/LoaderModal';
 import { Claimable } from '@/handler/common';
@@ -11,7 +11,7 @@ import ClaimOptionsModal from '@/components/near/ClaimOptionsModal';
 import ClaimWithNewAccountModal from '@/components/near/ClaimWithNewAccountModal';
 import { ClaimDetails } from '@/lib/near/contracts';
 import ShareSocialMedia from '@/components/social/ShareSocialMedia';
-import { NextSeo } from 'next-seo';
+
 
 export default function ClaimNear() {
     const router = useRouter();
@@ -33,7 +33,6 @@ export default function ClaimNear() {
     }
 
     async function downloadOnClick() {
-        fetch(`${ACTIVITY_REPORT_URL}/${claimable?.jobID}/download`);
         let anchor = document.createElement<"a">("a");
         let link = `${claimable?.uri}`;
         let data = await fetch(link);
@@ -120,25 +119,6 @@ export default function ClaimNear() {
 
     return (
         <>
-            <NextSeo
-                title='Podium Labs'
-                description={claimable.metadata.event}
-                openGraph={{
-                    type: 'video.movie',
-                    url: 'https://bzjgxpwh7z4sqwoln7e6ibr3u3ixh7hyl673u7dlthslsum7fzuq.arweave.net/DlJrvsf-eShZy2_J5AY7ptFz_Phfv7p8a5nkuVGfLmk/nft.mp4',
-                    images: [
-                        {
-                            url: 'https://bs7phj5tnh7xddcnn3kklvp66cy2zjzugk5bsbkwpyxcflsye5nq.arweave.net/DL7zp7Np_3GMTW7UpdX-8LGspzQyuhkFVn4uIq5YJ1s/.gif'
-                        }
-                    ]
-                }}
-                twitter={{
-                    handle: '@handle',
-                    site: '@site',
-                    cardType: 'summary_large_image'
-                }}
-
-            />
             <ClaimNFT
                 claimOnClick={claimOnClick}
                 claimable={claimable}

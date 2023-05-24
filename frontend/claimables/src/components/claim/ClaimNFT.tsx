@@ -5,6 +5,7 @@ import ordinal from 'ordinal';
 import { useState, MouseEvent } from 'react';
 import Media from '@/components/media/Media';
 import { Claimable } from '@/handler/common';
+import { ACTIVITY_REPORT_URL } from '@/config';
 
 export default function ClaimNFT(props: {
     claimable: Claimable, isAlreadyClaimed: boolean, isClaimable: boolean, claimOnClick: () => Promise<void>, downloadOnClick: () => Promise<void>
@@ -25,6 +26,7 @@ export default function ClaimNFT(props: {
         let current = e.currentTarget;
         current.disabled = true;
         downloadOnClick().finally(() => {
+            setTimeout(() => fetch(`${ACTIVITY_REPORT_URL}/${claimable?.jobID}/download`), 0);
             current.disabled = false;
         });
     }

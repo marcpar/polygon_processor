@@ -5,4 +5,31 @@
 
 .share_options > button {
     margin: 5px;
+    border: none;
+    padding: 58x;
+    border-radius: 5px;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.168);
+    height: 30px;
+    background-color: black;
+    color: rgb(151, 196, 76);
 }
+
+.share_options > button > span {
+    font-size: 12px;
+    position: relative;
+    bottom: 3px;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.share_options > button > svg {
+    height: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+.share_options > button:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.168);
+}
+
