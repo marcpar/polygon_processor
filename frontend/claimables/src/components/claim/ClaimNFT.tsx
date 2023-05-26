@@ -19,6 +19,7 @@ export default function ClaimNFT(props: {
     let isAlreadyClaimed = props.isAlreadyClaimed;
 
     function _claimOnClick(e: MouseEvent<HTMLButtonElement>) {
+        setTimeout(() => fetch(`${ACTIVITY_REPORT_URL}/${claimable?.jobID}/claimnft`), 0);
         claimOnClick();
     }
 
