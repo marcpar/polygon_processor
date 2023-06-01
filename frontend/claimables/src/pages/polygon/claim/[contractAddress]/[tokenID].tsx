@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import style from '@/styles/components/claim/claim.module.css';
 import { useEffect, useState } from 'react';
-import {claimNFT, checkIfAlreadyClaimed, getClaimable, ClaimDetails, parseFromBase64String } from '@/handler/polygon';
+import { claimNFT, checkIfAlreadyClaimed, getClaimable, ClaimDetails, parseFromBase64String } from '@/handler/polygon';
 import { GridLoader } from 'react-spinners';
 import { POLYGON_OPENSEA_BASE_URL } from '@/config';
 import { configureProvider } from '@/lib/eth';
@@ -51,8 +51,15 @@ export default function ClaimPolygon() {
 
     useEffect(() => {
         if (!isWalletConfigured) return;
-        if (!claimDetails) {
-            setClaimDetails(parseFromBase64String(window.location.hash));
+        if (claimDetails === undefined) {
+            let claimDetails = null;
+            try {
+                claimDetails = parseFromBase64String(window.location.hash)
+            } catch (e) {
+                console.error(e);
+                return
+            };
+            setClaimDetails(claimDetails);
         }
     }, [isWalletConfigured, claimDetails]);
 
