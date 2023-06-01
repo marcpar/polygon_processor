@@ -13,7 +13,7 @@ import { CreateAzureStorageQueue } from 'lib/dist/queue';
     SetDefaultCallBack(config.DefaultCallbackURL);
     SetQueue(CreateAzureStorageQueue(config.AzureAccountName, config.AzureAccountKey, config.Topic));
     ConfigureEth({
-        networkID: '80001',
+        networkID: config.NetworkID,
         claimTokenAddress: config.ClaimTokenAddress,
         multiTokenAddress: config.MultiTokenAddress,
         multiTokenMinterAddress: config.MultiTokenMinterAddress,

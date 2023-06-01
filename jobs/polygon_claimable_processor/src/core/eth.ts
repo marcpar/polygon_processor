@@ -4,7 +4,7 @@ import { MultiToken__factory, MultiToken, GasToken, GasToken__factory, ClaimToke
 
 type EthConfig = {
     privateKey: string,
-    networkID: string,
+    networkID: number,
     rpcURL: string,
     claimTokenAddress: string,
     multiTokenAddress: string,
@@ -30,7 +30,7 @@ let _claimToken: ClaimToken;
 
 function ConfigureEth(config: EthConfig) {
     _config = config;
-    _provider = new JsonRpcProvider(_config.rpcURL, 80001);
+    _provider = new JsonRpcProvider(_config.rpcURL, config.networkID);
     _wallet = new Wallet(_config.privateKey, _provider);
     _multiToken = MultiToken__factory.connect(_config.multiTokenAddress, _wallet);
     _claimToken = ClaimToken__factory.connect(_config.claimTokenAddress, _wallet);

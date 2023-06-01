@@ -13,6 +13,7 @@ type Config = {
     DefaultCallbackURL: string,
     MaxJobs: number,
     RpcUrl: string,
+    NetworkID: number
     ClaimableBaseURL: string,
 }
 
@@ -56,6 +57,10 @@ function LoadConfig() {
         Logger().error("RPC_URL is a required environment variable");
         process.exit(1);
     }
+    if (!process.env.NETWORK_ID) {
+        Logger().error("NETWORK_ID is a required environment variable");
+        process.exit(1);
+    }
     if (!process.env.CLAIMABLE_BASE_URL) {
         Logger().error("CLAIMABLE_BASE_URL is a required environment variable");
         process.exit(1);
@@ -73,7 +78,8 @@ function LoadConfig() {
             DefaultCallbackURL: process.env.DEFAULT_CALLBACK_URL,
             MaxJobs: process.env.MAX_JOBS ? parseInt(process.env.MAX_JOBS) : 0,
             RpcUrl: process.env.RPC_URL,
-            ClaimableBaseURL: process.env.CLAIMABLE_BASE_URL
+            ClaimableBaseURL: process.env.CLAIMABLE_BASE_URL,
+            NetworkID: parseInt(process.env.NETWORK_ID, 10)
         }
     } catch (e) {
         let err = e as Error;

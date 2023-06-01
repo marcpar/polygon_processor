@@ -4,7 +4,7 @@ import { MultiToken__factory, MultiToken } from 'solidity/typechain-types';
 
 type EthConfig = {
     privateKey: string,
-    networkID: string,
+    networkID: number,
     rpcURL: string,
     multiTokenAddress: string,
     openSeaBaseUrl: string
@@ -26,7 +26,7 @@ let _token: MultiToken;
 
 function ConfigureEth(config: EthConfig) {
     _config = config;
-    _provider = new JsonRpcProvider(_config.rpcURL, 80001);
+    _provider = new JsonRpcProvider(_config.rpcURL, config.networkID);
     _wallet = new Wallet(_config.privateKey, _provider);
     _token = MultiToken__factory.connect(_config.multiTokenAddress, _wallet);
 
