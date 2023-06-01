@@ -96,6 +96,7 @@ async function processJob(payload: Payload[]) {
             return await Mint(`ar://${payload[0].ArweaveTxnId}/opensea.json`);
         }, 5);
 
+        Logger().info(`successfully processed ${payload[0].JobId}`);
         Emit({
             Event: 'success',
             JobId: payload[0].JobId,
