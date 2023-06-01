@@ -16,7 +16,7 @@ export default function ClaimPolygon() {
     let [claimable, setClaimable] = useState<Claimable | undefined>(undefined);
     let [isClaimable, setIsClaimable] = useState<boolean>(false);
     let [isAlreadyClaimed, setIsAlreadyClaimed] = useState<boolean>(false);
-    let [claimDetails, setClaimDetails] = useState<ClaimDetails | undefined>(undefined);
+    let [claimDetails, setClaimDetails] = useState<ClaimDetails | undefined | null>(undefined);
     let [isWalletConfigured, setIsWalletConfigured] = useState<boolean>(false);
     let [isLoaderModalOpen, setIsLoaderModalOpen] = useState<boolean>(false);
 
@@ -57,7 +57,6 @@ export default function ClaimPolygon() {
                 claimDetails = parseFromBase64String(window.location.hash)
             } catch (e) {
                 console.error(e);
-                return
             };
             setClaimDetails(claimDetails);
         }
@@ -69,6 +68,7 @@ export default function ClaimPolygon() {
             getClaimable(contractAddress, parseInt(tokenID, 10)).then(async (claimable) => {
                 setClaimable(claimable);
             }).catch(e => {
+                console.error(e);
                 window.location.reload();
             });
         }
@@ -81,6 +81,7 @@ export default function ClaimPolygon() {
                 setIsAlreadyClaimed(isClaimed);
                 setIsClaimable(!isClaimed);
             }).catch(e => {
+                console.error(e);
                 window.location.reload();
             });
         }

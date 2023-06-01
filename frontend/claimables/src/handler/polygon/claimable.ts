@@ -23,7 +23,7 @@ async function getClaimable(tokenAddress: string, tokenId: number): Promise<Clai
     return {
         uri: ResolveArweaveURIToGateway(metadata.animation_url) + '/.mp4',
         metadata: getClaimableMetadataFromOpenseaMetadata(metadata),
-        jobID: await getJobID(uri)
+        jobID: await getJobID(uri.replace('ar://', '').replace('/opensea.json', ''))
     };
 }
 
