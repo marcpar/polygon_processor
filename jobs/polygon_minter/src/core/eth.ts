@@ -33,7 +33,9 @@ function ConfigureEth(config: EthConfig) {
 }
 
 async function Mint(uri: string): Promise<MintResult> {
-    let res = await _token.externalMintNFT(uri);
+    let res = await _token.externalMintNFT(uri, {
+        gasPrice: await _provider.getGasPrice()
+    });
     let receipt = await res.wait();
     let tokenId = '';
     receipt.events?.forEach(event => {
@@ -49,7 +51,9 @@ async function Mint(uri: string): Promise<MintResult> {
 }
 
 async function MintBatch(uris: string[]): Promise<MintResult[]> {
-    let res = await _token.externalBatchMintNFTs(uris);
+    let res = await _token.externalBatchMintNFTs(uris, {
+        gasPrice: await _provider.getGasPrice()
+    });
     let receipt = await res.wait();
     let mintResults: MintResult[] = [];
     let ids: string[] = [];

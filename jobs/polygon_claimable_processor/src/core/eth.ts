@@ -38,7 +38,10 @@ function ConfigureEth(config: EthConfig) {
 
 async function CreateClaimable(tokenId: number): Promise<ClaimableResult> {
     let newWallet = Wallet.createRandom();
-    await _claimToken.externalTransferAssets(_config.multiTokenMinterAddress, _config.multiTokenAddress, newWallet.address, tokenId);
+    
+    await _claimToken.externalTransferAssets(_config.multiTokenMinterAddress, _config.multiTokenAddress, newWallet.address, tokenId, {
+        gasPrice: await _provider.getGasPrice()
+    });
     let claimableURL = new URL(`${_config.claimableBaseURL}/${_config.multiTokenAddress}/${tokenId}`);
     claimableURL.hash = Buffer.from(JSON.stringify({
         PrivateKey: newWallet.privateKey,
@@ -69,7 +72,9 @@ async function BatchCreateClaimable(tokenIds: number[]): Promise<ClaimableResult
             ClaimURL: claimableURL.toString()
         });
     }
-    await _claimToken.externalBatchTransferAssets(_config.multiTokenMinterAddress, _config.multiTokenAddress, newAddresses, tokenIds);
+    await _claimToken.externalBatchTransferAssets(_config.multiTokenMinterAddress, _config.multiTokenAddress, newAddresses, tokenIds, {
+        gasPrice: await _provider.getGasPrice()
+    });
 
     return claimableResult;
 }
