@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { claimNFT, checkIfAlreadyClaimed, getClaimable, ClaimDetails, parseFromBase64String } from '@/handler/polygon';
 import { GridLoader } from 'react-spinners';
 import { POLYGON_OPENSEA_BASE_URL } from '@/config';
-import { configureProvider } from '@/lib/eth';
+import { configurePolygonProvider } from '@/lib/eth';
 import ClaimNFT from '@/components/claim/ClaimNFT';
 import LoaderModal from '@/components/loader/LoaderModal';
 import { Claimable } from '@/handler/common';
@@ -43,7 +43,7 @@ export default function ClaimPolygon() {
 
     useEffect(() => {
         if (!isWalletConfigured) {
-            configureProvider().then(() => {
+            configurePolygonProvider().then(() => {
                 setIsWalletConfigured(true);
             })
         }

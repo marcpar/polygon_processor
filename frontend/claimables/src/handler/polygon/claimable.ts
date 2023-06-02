@@ -2,7 +2,7 @@ import { POLYGON_CLAIM_TOKEN_ADDRESS, POLYGON_TRUSTED_FORWARDER_ADDRESS } from "
 import { ResolveArweaveURIToGateway } from "@/lib/arweave";
 import { buildForwardTxRequest, getDataToSignForPersonalSign, sendTransaction } from "@/lib/biconomy/helpers";
 import { ClaimToken, Forwarder, MultiToken } from "@/lib/eth";
-import { getConfiguredProvider } from "@/lib/eth/provider";
+import { getPolygonProvider } from "@/lib/eth/provider";
 import { GetOpenSeaMetadataFromURI, OpenSeaMetadata } from "@/lib/opensea";
 import { BrowserProvider, Wallet } from 'ethers';
 import { Claimable, ClaimableMetadata } from "../common";
@@ -15,7 +15,7 @@ type ClaimDetails = {
 }
 
 async function getClaimable(tokenAddress: string, tokenId: number): Promise<Claimable> {
-    let browserProvider = new BrowserProvider(await getConfiguredProvider(), 80001);
+    let browserProvider = new BrowserProvider(await getPolygonProvider());
     let multiTokenContract = new MultiToken(tokenAddress, browserProvider);
     let uri = await multiTokenContract.uri(tokenId);
     let metadata = await GetOpenSeaMetadataFromURI(uri);
@@ -66,7 +66,7 @@ function getClaimableMetadataFromOpenseaMetadata(meta: OpenSeaMetadata): Claimab
 
 
 async function claimNFT(claimable: ClaimDetails): Promise<void> {
-    let browser = new BrowserProvider(await getConfiguredProvider(), 80001);
+    let browser = new BrowserProvider(await getPolygonProvider(), 80001);
 
     let receiver = (await browser.getSigner()).address;
     let wallet = new Wallet(claimable.PrivateKey, browser);
@@ -115,7 +115,7 @@ function parseFromBase64String(str: string): ClaimDetails {
 }
 
 async function checkBalanceOfAddress(address: string, tokenAddress: string, tokenID: number): Promise<number> {
-    let multiTokenContract = new MultiToken(tokenAddress, new BrowserProvider(await getConfiguredProvider(), 80001));
+    let multiTokenContract = new MultiToken(tokenAddress, new BrowserProvider(await getPolygonProvider()));
     return multiTokenContract.balanceOf(address, tokenID);
 }
 

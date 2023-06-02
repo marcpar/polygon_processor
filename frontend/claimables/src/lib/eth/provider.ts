@@ -1,3 +1,5 @@
+import { POLYGON_NETWORK_ID } from "@/config";
+
 function getWindowEthereumProvider(): any {
     
     const ethereum = (window as any).ethereum;
@@ -7,17 +9,32 @@ function getWindowEthereumProvider(): any {
     return ethereum;
 }
 
-async function getConfiguredProvider(): Promise<any> {
-    await configureProvider();
+async function getPolygonProvider(): Promise<any> {
+    await configurePolygonProvider();
     return getWindowEthereumProvider();
 }
 
-async function addNetwork() {
-
+async function configurePolygonProvider(): Promise<any> {
+    switch (POLYGON_NETWORK_ID) {
+        case 'mainnet':
+            return await changeNetworkPolygonMainnet();
+        case 'testnet':
+            return await changeNetworkMumbai();
+        default:
+            throw new Error(`unsupported network ${POLYGON_NETWORK_ID}`);
+    }
 }
 
-async function configureProvider() {
-    await changeNetworkMumbai();
+async function changeNetworkMumbai() {
+    const ethereum = getWindowEthereumProvider();
+    try {
+        await ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: "0x13881" }],
+        });
+    } catch (err) {
+        await addMumbaiNetwork();
+    }
 }
 
 async function addMumbaiNetwork() {
@@ -39,20 +56,40 @@ async function addMumbaiNetwork() {
     });
 }
 
-async function changeNetworkMumbai() {
+async function changeNetworkPolygonMainnet() {
     const ethereum = getWindowEthereumProvider();
     try {
         await ethereum.request({
             method: 'wallet_switchEthereumChain',
-            params: [{ chainId: "0x13881" }],
+            params: [{ chainId: "0x89" }],
         });
     } catch (err) {
-        await addMumbaiNetwork();
+        await addPolygonMainnet();
     }
 }
 
+async function addPolygonMainnet(): Promise<void> {
+    const ethereum = getWindowEthereumProvider();
+    await ethereum.request({
+        method: 'wallet_addEthereumChain',
+        params: [
+            {
+                chainId: '0x89',
+                chainName: 'Polygon Mainnet',
+                rpcUrls: ['https://polygon-mainnet.infura.io'],
+                blockExplorerUrls: ['https://polygonscan.com/'],
+                nativeCurrency: {
+                    symbol: 'MATIC',
+                    decimals: 18
+                }
+            }
+        ]
+    });
+}
+
+
 export {
     getWindowEthereumProvider,
-    getConfiguredProvider,
-    configureProvider
+    getPolygonProvider,
+    configurePolygonProvider
 }

@@ -1,4 +1,5 @@
 
+const POLYGON_NETWORK_ID = process.env.NEXT_PUBLIC_POLYGON_NETWORK_ID as string;
 
 const POLYGON_CLAIM_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_POLYGON_CLAIM_TOKEN_ADDRESS as string;
 
@@ -19,6 +20,7 @@ const NEAR_ACCOUNT_POSTFIX = NEAR_NETWORK_NAME === 'mainnet' ? '.near' : '.testn
 const ACTIVITY_REPORT_URL = process.env.NEXT_PUBLIC_ACTIVITY_REPORT_URL ?? 'https://testminter.azurewebsites.net/claim-activity';
 
 export {
+    POLYGON_NETWORK_ID,
     POLYGON_CLAIM_TOKEN_ADDRESS,
     POLYGON_TRUSTED_FORWARDER_ADDRESS,
     POLYGON_OPENSEA_BASE_URL,
