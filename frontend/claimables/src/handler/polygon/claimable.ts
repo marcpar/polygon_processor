@@ -66,7 +66,7 @@ function getClaimableMetadataFromOpenseaMetadata(meta: OpenSeaMetadata): Claimab
 
 
 async function claimNFT(claimable: ClaimDetails): Promise<void> {
-    let browser = new BrowserProvider(await getPolygonProvider(), 80001);
+    let browser = new BrowserProvider(await getPolygonProvider());
 
     let receiver = (await browser.getSigner()).address;
     let wallet = new Wallet(claimable.PrivateKey, browser);
