@@ -98,27 +98,27 @@ async function claimWithExistingAccountCallback(claimDetails: ClaimDetails) {
         throw new Error('wallet is not signed in');
     }
 
-    await sendNFT(wallet.account().accountId, claimDetails.NFTContract, claimDetails.TokenId, claimDetails.PrivateKey);
+    await sendNFT(wallet.account().accountId, claimDetails);
     wallet.signOut();
 }
 
-async function sendNFT(receiver_id: string, nft_account_id: string, token_id: string , private_key: string) {
+async function sendNFT(receiver_id: string, claimDetails: ClaimDetails) {
     let nearConfig = GetConfigInMemory(NEAR_NETWORK_NAME);
     let keyStore = new nearAPI.keyStores.InMemoryKeyStore();
-    let accountId = process.env.REACT_APP_VAULT_CONTRACT as string ?? 'vault.world-triathlon.testnet';
+    let accountId = claimDetails.VaultContract ?? NEAR_VAULT_CONTRACT_ADDRESS ?? 'vault.world-triathlon.testnet';
 
-    await keyStore.setKey(NEAR_NETWORK_NAME, accountId, nearAPI.KeyPair.fromString(private_key));
+    await keyStore.setKey(NEAR_NETWORK_NAME, accountId, nearAPI.KeyPair.fromString(claimDetails.PrivateKey));
 
     nearConfig.keyStore = keyStore;
     let conn = await nearAPI.connect(nearConfig);
-    let vaultContract = GetVaultContract(await conn.account(accountId));
+    let vaultContract = GetVaultContract(await conn.account(accountId), claimDetails.VaultContract);
 
-    let callback = NEAR_NETWORK_NAME === 'mainnet'? `https://app.mynearwallet.com/nft-detail/${nft_account_id}/${token_id}` : `https://testnet.mynearwallet.com/nft-detail/${nft_account_id}/${token_id}`;
+    let callback = NEAR_NETWORK_NAME === 'mainnet'? `https://app.mynearwallet.com/nft-detail/${claimDetails.NFTContract}/${claimDetails.TokenId}` : `https://testnet.mynearwallet.com/nft-detail/${claimDetails.NFTContract}/${claimDetails.TokenId}`;
     
     await vaultContract.claim({
         callbackUrl: callback,
         args: {
-            claimable_id: `${nft_account_id}:${token_id}`,
+            claimable_id: `${claimDetails.NFTContract}:${claimDetails.TokenId}`,
             receiver_id: receiver_id
         }, gas: "60000000000000"
     });
@@ -131,8 +131,8 @@ async function checkIfClaimable(token: string): Promise<boolean> {
     } catch (e) {
         return false;
     }
-    
-    let vault = await GetVaultContractAnonAsync();
+
+    let vault = await GetVaultContractAnonAsync(tokenObj.VaultContract);
     let res = await vault.get_claimable({
         nft_account: tokenObj.NFTContract,
         token_id: tokenObj.TokenId
@@ -151,13 +151,13 @@ async function claimNFT(claimable: ClaimDetails): Promise<void> {
 async function createNewAccountAndClaim(claimDetails: ClaimDetails, newAccountId: string, newPrivateKey: string, newPublicKey: string) {
     let nearConfig = GetConfigInMemory(NEAR_NETWORK_NAME);
     let keyStore = new nearAPI.keyStores.InMemoryKeyStore();
-    let accountId = process.env.REACT_APP_VAULT_CONTRACT as string ?? 'vault.world-triathlon.testnet';
+    let accountId = claimDetails.VaultContract ?? NEAR_VAULT_CONTRACT_ADDRESS ?? 'vault.world-triathlon.testnet';
 
     await keyStore.setKey(NEAR_NETWORK_NAME, accountId, nearAPI.KeyPair.fromString(claimDetails.PrivateKey));
 
     nearConfig.keyStore = keyStore;
     let conn = await nearAPI.connect(nearConfig);
-    let vaultContract = GetVaultContract(await conn.account(accountId));
+    let vaultContract = GetVaultContract(await conn.account(accountId), claimDetails.VaultContract);
 
     let callback = NEAR_NETWORK_NAME === 'mainnet'? `https://app.mynearwallet.com/auto-import-secret-key#${newAccountId}/${newPrivateKey}` : `https://testnet.mynearwallet.com/auto-import-secret-key#${newAccountId}/${newPrivateKey}`;
     
@@ -180,7 +180,16 @@ async function checkIfAlreadyClaimed(contractAddress: string, tokenId: string): 
     if (!token) {
         throw new Error(`invalid token ${tokenId}: ${token}`);
     }
-    return token.owner_id !== NEAR_VAULT_CONTRACT_ADDRESS;
+    try {
+        let result = await (await GetVaultContractAnonAsync(token.owner_id)).get_claimable({
+            nft_account: contractAddress,
+            token_id: tokenId
+        });
+        return result === null
+    } catch (_) {
+        return true;
+    }
+    
 }
 
 export {

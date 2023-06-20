@@ -38,17 +38,17 @@ interface VaultContract extends nearAPI.Contract {
     }) => Promise<boolean> | Promise<void>
 }
 
-function GetVaultContract(account: nearAPI.Account): VaultContract {
-    return new nearAPI.Contract(account, NEAR_VAULT_CONTRACT_ADDRESS, {
+function GetVaultContract(account: nearAPI.Account, vaultContractAddress: string = NEAR_VAULT_CONTRACT_ADDRESS): VaultContract {
+    return new nearAPI.Contract(account, vaultContractAddress, {
         viewMethods: ['get_claimable'],
         changeMethods: ['claim']
     } as any) as VaultContract;
 }
 
-async function GetVaultContractAnonAsync(): Promise<VaultContract> {
+async function GetVaultContractAnonAsync(vaultContractAddress: string = NEAR_VAULT_CONTRACT_ADDRESS): Promise<VaultContract> {
     let near = await GetConnection(GetConfig(NEAR_NETWORK_NAME));
-    let account = new nearAPI.Account(near.connection, NEAR_VAULT_CONTRACT_ADDRESS);
-    return new nearAPI.Contract(account, NEAR_VAULT_CONTRACT_ADDRESS, {
+    let account = new nearAPI.Account(near.connection, vaultContractAddress);
+    return new nearAPI.Contract(account, vaultContractAddress, {
         viewMethods: ['get_claimable'],
         changeMethods: []
     } as any) as VaultContract;
